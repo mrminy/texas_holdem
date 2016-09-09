@@ -2,7 +2,6 @@ import parameters
 
 
 def evaluate(cards):
-    value, top_cards = 0, []
     if len(cards) < 5:
         return None
     value, top_cards = check_straight_flush(cards)
@@ -128,7 +127,6 @@ def check_straight(cards):
         if len(straight_cards) == 5:
             return parameters.EVAL_VALUES[4], straight_cards
     # Handle ace...
-    n_cards = len(cards)
     if cards[0][1] == 14:
         for i, c in enumerate(cards):
             counter = 0

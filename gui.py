@@ -3,7 +3,8 @@ from pygame.locals import *
 import game
 import parameters
 import time
-from player import My_AI, Player, Other_player, Call_player
+from player import Player, Other_player, Call_player
+from ai import My_AI
 
 white = (255, 64, 64)
 green = (51, 204, 51)
@@ -12,7 +13,7 @@ img_dim = (150, 217)
 running = 1
 
 # Players to play with GUI
-input_players = [My_AI(0, "P1", 0, None, None), Player(1, "P2", 0, None, None), Player(2, "P3", 0, None, None)]
+input_players = [My_AI(0, "P1", 0, None, None), My_AI(1, "P2", 0, None, None), My_AI(2, "P3", 0, None, None)]
 
 
 def get_card_image(card):
@@ -42,9 +43,9 @@ def main():
     player_cards_pos = [[(200, dim[1] - img_dim[1]), (200 + img_dim[0], dim[1] - img_dim[1])],
                         [(200, 0), (200 + img_dim[0], 0)],
                         [(dim[0] - 2 * img_dim[0], 270), (dim[0] - img_dim[0], 270)]]
-    player_text_pos = [[(10, dim[1] - img_dim[1]), (10, dim[1] - img_dim[1] + 30)],
-                       [(10, 0), (10, 30)],
-                       [(dim[0] - 2 * img_dim[0], 200), (dim[0] - 2*img_dim[0], 230)]]
+    player_text_pos = [[(10, dim[1] - img_dim[1]), (10, dim[1] - img_dim[1] + 30), (10, dim[1] - img_dim[1] + 60)],
+                       [(10, 0), (10, 30), (10, 60)],
+                       [(dim[0] - 2 * img_dim[0], 170), (dim[0] - 2 * img_dim[0], 200), (dim[0] - 2 * img_dim[0], 230)]]
     font = pygame.font.Font(None, 34)
 
     while running:
@@ -72,6 +73,8 @@ def main():
             screen.blit(text_p1, player_text_pos[i][0])
             text_t2 = font.render("Bet: " + str(p.bet), 1, (10, 10, 10))
             screen.blit(text_t2, player_text_pos[i][1])
+            text_t3 = font.render("Name: " + str(p.name), 1, (10, 10, 10))
+            screen.blit(text_t3, player_text_pos[i][2])
             if p.bet >= 0:
                 screen.blit(get_card_image(p.hand[0]), player_cards_pos[i][0])
                 screen.blit(get_card_image(p.hand[1]), player_cards_pos[i][1])

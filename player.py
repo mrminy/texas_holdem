@@ -1,8 +1,5 @@
 import random
 
-import ai
-import parameters
-
 
 class Player:
     def __init__(self, id_value, name, chips, card1, card2):
@@ -46,11 +43,11 @@ class Player:
             self.hand[1]) + ' - chips: ' + str(self.chips)
 
 
-
 class Other_player(Player):
     """
     Used for testing og debugging
     """
+
     def make_decision(self, current_bet, max_bet, pot, board, allowed_actions):
         if len(board) == 0:
             return current_bet - self.bet
@@ -62,5 +59,6 @@ class Call_player(Player):
     """
     Used for testing og debugging. Always calls
     """
+
     def make_decision(self, current_bet, max_bet, pot, board, allowed_actions):
         return current_bet - self.bet

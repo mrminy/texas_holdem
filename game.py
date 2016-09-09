@@ -2,8 +2,6 @@ from player import Player
 import parameters
 import evaluator
 from deck import Deck
-import random
-import time
 
 
 class Texas_holdem:
@@ -187,17 +185,18 @@ class Texas_holdem:
         for p in self.players_this_round:
             if p.chips != 0 and p.chips < max_bet:
                 max_bet = p.chips
-        return max_bet
+        return max(max_bet, 0)
 
     def betting(self, current_bet):
         current_player = None
         max_bet = self.find_max_bet()
         betting_counter = 0
-        while not self.all_pleased(current_bet) or max_bet <= 0 or betting_counter < len(self.players_this_round):
+        while not self.all_pleased(current_bet) or betting_counter < len(self.players_this_round):
             betting_counter += 1
             if current_player is None:
                 current_player = self.get_player_after_big_blind()
             else:
+                print("går her...", max_bet)
                 current_player = self.get_next_player(current_player, self.players_this_round)
             new_bet = self.decide_action(current_bet, max_bet, current_player)
             if new_bet is not None:
@@ -209,10 +208,11 @@ class Texas_holdem:
         if p.bet == current_bet:
             allowed_actions = 3
         bet = p.make_decision(current_bet, max_bet, self.pot, self.board, allowed_actions)
+        bet = min(bet, p.chips)
         if bet >= 0:
             p.bet += bet
         if bet <= -1 or p.bet < current_bet:
-            print(p.name, "folding...")
+            print(p.name, "folding...", "current bet", current_bet)
             # Fold
             p.bet = -1
             self.players_this_round.remove(p)
@@ -220,7 +220,7 @@ class Texas_holdem:
         else:
             p.chips -= bet
             self.pot += bet
-            print(p.name, "betting ", bet, "in total", p.bet)
+            print(p.name, "betting ", bet, "in total", p.bet, "current bet", current_bet, )
             return p.bet
 
     def play_one_step(self, logger=False):

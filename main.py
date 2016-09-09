@@ -1,5 +1,6 @@
 import game
-from player import My_AI, Player, Call_player
+from player import Player, Call_player
+from ai import My_AI
 
 N_games = 20
 win_counter = 0
