@@ -63,13 +63,14 @@ class Texas_holdem:
                 p.chips -= blind_value
                 p.give_hand(self.deck.draw_card(), self.deck.draw_card())
             for p in self.players:
-                if p.blind == 2:
+                if p.id_value == self.big_blind_id:
                     p.blind = 1
                     next_p = self.get_next_player(p, self.players_this_round)
                     next_p.blind = 2
                     self.big_blind_id = next_p.id_value
                     if len(self.players_this_round) > 2:
-                        self.get_previous_player(p).blind = 0
+                        self.get_previous_player(p, self.players_this_round).blind = 0
+                    break
 
     def dealer_step(self):
         if self.deal_nr == 0:
@@ -162,15 +163,16 @@ class Texas_holdem:
                 return p
         return player_array[0]
 
-    def get_previous_player(self, current_player):
+    def reverse_enum(self, L):
+        for index in reversed(range(len(L))):
+            yield index, L[index]
+
+    def get_previous_player(self, current_player, player_array):
         index = current_player.id_value
-        prev_p = None
-        while prev_p is None:
-            index -= 1
-            if index < 0:
-                index = len(self.players_this_round) - 1
-            prev_p = self.find_players_from_id_in_list(index, self.players_this_round)
-        return prev_p
+        for i, p in self.reverse_enum(player_array):
+            if p.id_value < index:
+                return p
+        return player_array[len(player_array) - 1]
 
     def all_pleased(self, current_bet):
         if len(self.players_this_round) == 1:
@@ -225,7 +227,7 @@ class Texas_holdem:
 
     def play_one_step(self, logger=False):
         if len(self.players) == 1:
-            print("We have a winner! Rounds played: " + str(self.round_nr))
+            print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
             return
         if len(self.players_this_round) <= 1:
             self.new_round()
@@ -238,6 +240,6 @@ class Texas_holdem:
             self.who_wins()
             self.clear_players()
             if len(self.players) == 1:
-                print("We have a winner! Rounds played: " + str(self.round_nr))
+                print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
                 return
             self.new_round()
