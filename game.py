@@ -1,7 +1,6 @@
 from player import Player
 import parameters
 import evaluator
-import numpy as np
 from deck import Deck
 import random
 import time
