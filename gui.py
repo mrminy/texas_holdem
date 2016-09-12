@@ -4,7 +4,7 @@ import game
 import parameters
 import time
 from player import Player, Other_player, Call_player
-from ai import My_AI
+from ai import My_AI, My_Experimenter_AI, My_Experimenter_AI2
 
 white = (255, 64, 64)
 green = (51, 204, 51)
@@ -15,7 +15,7 @@ img_dim = (150, 217)
 running = 1
 
 # Players to play with GUI
-input_players = [My_AI(0, "P1", 0, None, None), My_AI(1, "P2", 0, None, None), My_AI(2, "P3", 0, None, None)]
+input_players = [My_Experimenter_AI2(0, "P1", 0, None, None), Call_player(1, "P2", 0, None, None)]
 
 
 def get_card_image(card):
@@ -92,4 +92,6 @@ def main():
         time.sleep(parameters.ANIMATION_SPEED)
 
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    for i in range(0, 10):
+        main()

@@ -8,7 +8,7 @@ class Player:
         self.hand = []
         self.blind = 0
         self.chips = chips
-        self.bet = 0
+        self.bet = 0  # Current bet in this betting round
         self.give_hand(card1, card2)
 
     def give_hand(self, card1, card2):

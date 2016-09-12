@@ -86,6 +86,8 @@ class Texas_holdem:
         if self.deal_nr == 2:
             # Deal 1 card
             self.board.append(self.deck.draw_card())
+        for p in self.players:
+            p.bet = 0
         self.deal_nr += 1
 
     def who_wins(self):
@@ -106,6 +108,7 @@ class Texas_holdem:
             top_players.append(player_score_map[counter][1])
             counter += 1
         self.deal_pot(top_players)
+        print("Winners of round:", top_players)
         return top_players
 
     def find_players_from_id(self, id_values):
@@ -240,7 +243,10 @@ class Texas_holdem:
         if len(self.players_this_round) <= 1:
             self.new_round()
             return
-        self.betting(parameters.BIG_BLIND)
+        current_bet = 0
+        if self.deal_nr == 0:
+            current_bet = parameters.BIG_BLIND
+        self.betting(current_bet)
         self.dealer_step()
         if self.deal_nr == 4 or len(self.players_this_round) == 1:
             if logger:
