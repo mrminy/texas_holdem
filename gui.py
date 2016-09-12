@@ -8,6 +8,8 @@ from ai import My_AI
 
 white = (255, 64, 64)
 green = (51, 204, 51)
+black = (10, 10, 10)
+red = (200, 15, 45)
 dim = (1150, 750)
 img_dim = (150, 217)
 running = 1
@@ -69,11 +71,14 @@ def main():
         screen.blit(text_pot, (10, 220))
 
         for i, p in enumerate(g.players):
-            text_p1 = font.render("Chips: " + str(p.chips), 1, (10, 10, 10))
+            text_color = black
+            if p.chips <= 0:
+                text_color = red
+            text_p1 = font.render("Chips: " + str(p.chips), 1, text_color)
             screen.blit(text_p1, player_text_pos[i][0])
-            text_t2 = font.render("Bet: " + str(p.bet), 1, (10, 10, 10))
+            text_t2 = font.render("Bet: " + str(p.bet), 1, text_color)
             screen.blit(text_t2, player_text_pos[i][1])
-            text_t3 = font.render("Name: " + str(p.name), 1, (10, 10, 10))
+            text_t3 = font.render("Name: " + str(p.name), 1, text_color)
             screen.blit(text_t3, player_text_pos[i][2])
             if p.bet >= 0:
                 screen.blit(get_card_image(p.hand[0]), player_cards_pos[i][0])

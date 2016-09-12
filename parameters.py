@@ -6,8 +6,10 @@ START_CHIPS = 1000
 BIG_BLIND = 100
 SMALL_BLIND = 50
 
+EVALUATIONS_FILE_NAME = 'evaluations'
+
 # AI
-EVALUATION_PRECISION = 10000
+EVALUATION_PRECISION = 2500
 
 # Straight flush, four of a kind, full house, flush, straight, three of a  kind, two pair, one pair, high card
 EVAL_VALUES = [9, 8, 7, 6, 5, 4, 3, 2, 1]

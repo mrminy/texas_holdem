@@ -49,18 +49,13 @@ def evaluate_score(score_arr_1, score_arr_2):
 
 
 def check_straight_flush(cards):
-    value, flush_cards = check_flush(cards)
-    if value != 0:
-        value_straight, straight_cards = check_straight(cards)
-        if value_straight != 0:
-            for i, c_s in enumerate(straight_cards):
-                exists = False
-                for j, c_f in enumerate(flush_cards):
-                    if c_s[0] == c_f[0] and c_s[1] == c_f[1]:
-                        exists = True
-                if not exists:
-                    return 0, []
-            return parameters.EVAL_VALUES[0], straight_cards
+    cards.sort(key=lambda x: x[0], reverse=True)
+    for i in range(0, len(cards) - 4):
+        if cards[i][0] == cards[i + 1][0] == cards[i + 2][0] == cards[i + 3][0] == cards[i + 4][0]:
+            flush_cards = cards[i:i + 5]
+            value, straight_cards = check_straight(flush_cards)
+            if value != 0:
+                return parameters.EVAL_VALUES[0], straight_cards
     return 0, []
 
 

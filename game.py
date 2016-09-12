@@ -9,6 +9,7 @@ class Texas_holdem:
         self.deck = Deck()
         self.board = []
         self.pot = 0
+        self.all_betting_history = []
         self.players = []
         self.players_this_round = []
         self.round_nr = 0
@@ -19,6 +20,7 @@ class Texas_holdem:
     def reset(self, input_players=[]):
         self.deck.reset_deck()
         self.board = []
+        self.all_betting_history = []
         self.pot = 0
         self.round_nr = 0
         self.deal_nr = 0
@@ -193,26 +195,29 @@ class Texas_holdem:
         current_player = None
         max_bet = self.find_max_bet()
         betting_counter = 0
+        betting_history = []
         while not self.all_pleased(current_bet) or betting_counter < len(self.players_this_round):
             betting_counter += 1
             if current_player is None:
                 current_player = self.get_player_after_big_blind()
             else:
-                print("går her...", max_bet)
                 current_player = self.get_next_player(current_player, self.players_this_round)
-            new_bet = self.decide_action(current_bet, max_bet, current_player)
+            new_bet = self.decide_action(betting_history, current_bet, max_bet, current_player)
             if new_bet is not None:
                 current_bet = new_bet
             max_bet = self.find_max_bet()
+        print(betting_history)
+        self.all_betting_history.append(betting_history)
 
-    def decide_action(self, current_bet, max_bet, p):
+    def decide_action(self, betting_history, current_bet, max_bet, p):
         allowed_actions = 2
         if p.bet == current_bet:
             allowed_actions = 3
-        bet = p.make_decision(current_bet, max_bet, self.pot, self.board, allowed_actions)
+        bet = p.make_decision(betting_history, current_bet, max_bet, self.pot, self.board, allowed_actions)
         bet = min(bet, p.chips)
         if bet >= 0:
             p.bet += bet
+        betting_history.append([bet, p])
         if bet <= -1 or p.bet < current_bet:
             print(p.name, "folding...", "current bet", current_bet)
             # Fold
