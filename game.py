@@ -210,26 +210,27 @@ class Texas_holdem:
         self.all_betting_history.append(betting_history)
 
     def decide_action(self, betting_history, current_bet, max_bet, p):
-        allowed_actions = 2
-        if p.bet == current_bet:
-            allowed_actions = 3
         board_copy = self.board[:]
-        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), len(self.players_this_round), self.players,
-                              int(self.pot), board_copy, allowed_actions)
+        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), self.players_this_round, self.players,
+                              int(self.pot), board_copy)
         bet = min(bet, p.chips)
         if bet >= 0:
             p.bet += bet
         betting_history.append([bet, p])
         if bet <= -1 or p.bet < current_bet:
-            print(p.name, "folding...", "current bet", current_bet)
-            # Fold
-            p.bet = -1
-            self.players_this_round.remove(p)
-            return None
+            if current_bet == 0:
+                # Checking instead of folding
+                print(p.name, "checking...", "current bet", current_bet)
+                p.bet = 0
+            else:
+                print(p.name, "folding...", "current bet", current_bet)
+                # Fold
+                p.bet = -1
+                self.players_this_round.remove(p)
         else:
             p.chips -= bet
             self.pot += bet
-            print(p.name, "betting ", bet, "in total", p.bet, "current bet", current_bet, )
+            print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, )
             return p.bet
 
     def play_one_step(self, logger=False):

@@ -17,8 +17,7 @@ class Player:
     def get_hand(self):
         return self.hand
 
-    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
-                      allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board):
         """
         This represents a total random player
         :param betting_history: betting history for this betting round
@@ -29,15 +28,13 @@ class Player:
         :return: the bet. If fold, bet = -1. If check, bet = 0.
         """
         bet = -1
-        action = random.randint(1, allowed_actions)
+        action = random.randint(0, 1)
         if action == 1:
             call = random.random() >= 0.5
             if call:
                 bet = current_bet - self.bet
             else:
                 bet = random.randint(20, 200)
-        elif action == 3 or current_bet == 0:
-            bet = 0
         return min(bet, self.chips)
 
     def __str__(self):
@@ -50,8 +47,7 @@ class Other_player(Player):
     Used for testing og debugging
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
-                      allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board):
         if len(board) == 0:
             return current_bet - self.bet
         else:
@@ -63,6 +59,5 @@ class Call_player(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
-                      allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board):
         return current_bet - self.bet
