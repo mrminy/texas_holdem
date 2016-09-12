@@ -10,6 +10,7 @@ class TestEvaluator(unittest.TestCase):
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("High card:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
     def test_one_pair(self):
@@ -19,6 +20,7 @@ class TestEvaluator(unittest.TestCase):
         pair_1_1_score = evaluator.evaluate(pair_1_1)
         pair_1_2_score = evaluator.evaluate(pair_1_2)
         print("One pair:", pair_1_1_score, pair_1_2_score)
+        self.assertEqual(6, len(pair_1_2_score))
         self.assertEqual(-1, evaluator.evaluate_score(pair_1_1_score, pair_1_2_score))
 
         pair_1_1 = [[0, 2], [1, 2], [1, 5], [2, 8], [3, 10], [0, 7]]
@@ -26,6 +28,7 @@ class TestEvaluator(unittest.TestCase):
         pair_1_1_score = evaluator.evaluate(pair_1_1)
         pair_1_2_score = evaluator.evaluate(pair_1_2)
         print("One pair reverse:", pair_1_1_score, pair_1_2_score)
+        self.assertEqual(6, len(pair_1_2_score))
         self.assertEqual(1, evaluator.evaluate_score(pair_1_1_score, pair_1_2_score))
 
         pair_1_1 = [[0, 2], [1, 2], [1, 5], [2, 8], [3, 10], [0, 7]]
@@ -42,6 +45,7 @@ class TestEvaluator(unittest.TestCase):
         pair_2_1_score = evaluator.evaluate(pair_2_1)
         pair_2_2_score = evaluator.evaluate(pair_2_2)
         print("Two pair:", pair_2_1_score, pair_2_2_score)
+        self.assertEqual(6, len(pair_2_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(pair_2_1_score, pair_2_2_score))
 
         pair_2_1 = [[0, 2], [1, 2], [1, 9], [2, 9], [3, 10], [1, 10], [2, 14]]
@@ -58,6 +62,7 @@ class TestEvaluator(unittest.TestCase):
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("Three of a kind:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
     def test_straight(self):
@@ -67,15 +72,17 @@ class TestEvaluator(unittest.TestCase):
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("Straight:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
     def test_flush(self):
         # Test flush
         cards_1 = [[0, 2], [0, 3], [0, 5], [0, 8], [0, 10]]
-        cards_2 = [[3, 5], [3, 2], [3, 11], [3, 9], [3, 10]]
+        cards_2 = [[3, 5], [3, 2], [3, 11], [3, 9], [3, 10], [3, 4]]
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("Flush:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
         cards_1 = [[0, 2], [0, 3], [0, 5], [0, 8], [0, 10], [0, 12]]
@@ -84,6 +91,30 @@ class TestEvaluator(unittest.TestCase):
         cards_2_score = evaluator.evaluate(cards_2)
         print("Flush reverse:", cards_1_score, cards_2_score)
         self.assertEqual(1, evaluator.evaluate_score(cards_1_score, cards_2_score))
+
+    def test_full_house(self):
+        # Test full house
+        cards_1 = [[0, 2], [1, 2], [2, 2], [0, 8], [0, 8]]
+        cards_2 = [[3, 5], [2, 5], [1, 5], [3, 7], [2, 7]]
+        cards_1_score = evaluator.evaluate(cards_1)
+        cards_2_score = evaluator.evaluate(cards_2)
+        print("Full house:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
+        self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
+
+        cards_1 = [[0, 2], [1, 2], [3, 2], [0, 8], [0, 10], [0, 10]]
+        cards_2 = [[0, 2], [2, 2], [3, 2], [3, 9], [2, 9], [3, 4]]
+        cards_1_score = evaluator.evaluate(cards_1)
+        cards_2_score = evaluator.evaluate(cards_2)
+        print("Flush reverse:", cards_1_score, cards_2_score)
+        self.assertEqual(1, evaluator.evaluate_score(cards_1_score, cards_2_score))
+
+        cards_1 = [[0, 2], [1, 2], [3, 2], [0, 14], [0, 10], [0, 10]]
+        cards_2 = [[0, 2], [2, 2], [3, 2], [3, 10], [2, 10], [3, 4]]
+        cards_1_score = evaluator.evaluate(cards_1)
+        cards_2_score = evaluator.evaluate(cards_2)
+        print("Flush equal:", cards_1_score, cards_2_score)
+        self.assertEqual(0, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
     def test_four_of_a_kind(self):
         # Test four of a kind
@@ -99,6 +130,7 @@ class TestEvaluator(unittest.TestCase):
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("Four of a kind equal:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(0, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
     def test_straight_flush(self):
@@ -108,6 +140,7 @@ class TestEvaluator(unittest.TestCase):
         cards_1_score = evaluator.evaluate(cards_1)
         cards_2_score = evaluator.evaluate(cards_2)
         print("Straight flush:", cards_1_score, cards_2_score)
+        self.assertEqual(6, len(cards_1_score))
         self.assertEqual(-1, evaluator.evaluate_score(cards_1_score, cards_2_score))
 
         cards_1 = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 10]]

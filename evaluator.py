@@ -201,20 +201,3 @@ def high_card(cards):
     cards.sort(key=lambda x: x[1], reverse=True)
     return parameters.EVAL_VALUES[8], cards[0:5]
 
-# Test code
-# my_cards = [[1, 14], [0, 14], [2, 14], [3, 14], [1, 11], [3, 10], [2, 10]]
-# house_cards = [[1, 14], [0, 14], [0, 10], [2, 10], [1, 10], [3, 10], [2, 2]]
-# flush_test_cards = [[0, 14], [1, 9], [1, 10], [1, 2], [1, 7], [1, 5], [2, 2]]
-# straight_test_cards = [[0, 13], [1, 9], [1, 6], [1, 5], [1, 4], [1, 3], [2, 2]]
-# straight_test_cards_special = [[0, 14], [1, 9], [2, 3], [1, 5], [1, 4], [1, 3], [2, 2]]
-# straight_flush_test_cards = [[0, 13], [0, 12], [0, 10], [0, 9], [0, 11], [1, 3], [2, 2]]
-# print('Straight flush:', check_straight_flush(straight_flush_test_cards))
-# print('Four of a kind:', check_four_of_a_kind(my_cards))
-# print('Full house:', check_full_house(house_cards))
-# print('Flush:', check_flush(flush_test_cards))
-# print('Straight:', check_straight(straight_test_cards))
-# print('Special straight:', check_straight(straight_test_cards_special))
-# print('Three of a kind:', check_three_of_a_kind(my_cards))
-# print('Two pair:', check_two_pairs(my_cards))
-# print('One pair:', check_one_pair(my_cards))
-# print('High cards:', high_card(my_cards))

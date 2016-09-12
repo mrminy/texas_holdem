@@ -17,7 +17,8 @@ class Player:
     def get_hand(self):
         return self.hand
 
-    def make_decision(self, betting_history, current_bet, max_bet, pot, board, allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
+                      allowed_actions):
         """
         This represents a total random player
         :param betting_history: betting history for this betting round
@@ -49,7 +50,8 @@ class Other_player(Player):
     Used for testing og debugging
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, pot, board, allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
+                      allowed_actions):
         if len(board) == 0:
             return current_bet - self.bet
         else:
@@ -61,5 +63,6 @@ class Call_player(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, pot, board, allowed_actions):
+    def make_decision(self, betting_history, current_bet, max_bet, n_players_left_this_round, players, pot, board,
+                      allowed_actions):
         return current_bet - self.bet

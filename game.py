@@ -213,7 +213,9 @@ class Texas_holdem:
         allowed_actions = 2
         if p.bet == current_bet:
             allowed_actions = 3
-        bet = p.make_decision(betting_history, current_bet, max_bet, self.pot, self.board, allowed_actions)
+        board_copy = self.board[:]
+        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), len(self.players_this_round), self.players,
+                              int(self.pot), board_copy, allowed_actions)
         bet = min(bet, p.chips)
         if bet >= 0:
             p.bet += bet
