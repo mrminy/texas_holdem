@@ -5,7 +5,7 @@ from deck import Deck
 
 
 class Texas_holdem:
-    def __init__(self):
+    def __init__(self, input_players=[]):
         self.deck = Deck()
         self.board = []
         self.pot = 0
@@ -15,7 +15,7 @@ class Texas_holdem:
         self.round_nr = 0
         self.deal_nr = 0
         self.big_blind_id = 0
-        self.reset()
+        self.reset(input_players)
 
     def reset(self, input_players=[]):
         self.deck.reset_deck()
@@ -30,14 +30,14 @@ class Texas_holdem:
         if len(input_players) <= 1:
             for i in range(parameters.NR_OF_PLAYERS):
                 self.players.append(
-                    Player(i, str(i), parameters.START_CHIPS, self.deck.draw_card(), self.deck.draw_card()))
+                    Player(i, str(i), parameters.START_CHIPS))
         else:
             for p in input_players:
                 p.chips = parameters.START_CHIPS
-                p.hand = [self.deck.draw_card(), self.deck.draw_card()]
                 self.players.append(p)
         self.players[0].blind = 1
         self.players[1].blind = 2
+        self.new_round()
 
     def get_board_card_by_index(self, index):
         if len(self.board) > index:
@@ -219,6 +219,7 @@ class Texas_holdem:
         bet = min(bet, p.chips)
         if bet >= 0:
             p.bet += bet
+            p.total_bet += bet
         betting_history.append([bet, p])
         if bet <= -1 or p.bet < current_bet:
             if current_bet == 0:
@@ -236,6 +237,12 @@ class Texas_holdem:
             print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, )
             return p.bet
 
+    def player_all_in(self):
+        for p in self.players_this_round:
+            if p.chips <= 0:
+                return True
+        return False
+
     def play_one_step(self, logger=False):
         if len(self.players) == 1:
             print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
@@ -246,7 +253,8 @@ class Texas_holdem:
         current_bet = 0
         if self.deal_nr == 0:
             current_bet = parameters.BIG_BLIND
-        self.betting(current_bet)
+        if not self.player_all_in():
+            self.betting(current_bet)
         self.dealer_step()
         if self.deal_nr == 4 or len(self.players_this_round) == 1:
             if logger:

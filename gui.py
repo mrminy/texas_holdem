@@ -3,7 +3,7 @@ from pygame.locals import *
 import game
 import parameters
 import time
-from player import Player, Other_player, Call_player
+from player import Player, Other_player, Call_player, Human_player
 from ai import My_AI, My_Experimenter_AI, My_Experimenter_AI2
 
 white = (255, 64, 64)
@@ -15,7 +15,7 @@ img_dim = (150, 217)
 running = 1
 
 # Players to play with GUI
-input_players = [My_Experimenter_AI2(0, "P1", 0, None, None), Call_player(1, "P2", 0, None, None)]
+input_players = [Call_player(0, "P1", 0), Human_player(1, "P2", 0)]
 
 
 def get_card_image(card):
@@ -28,8 +28,7 @@ def get_card_image(card):
 
 
 def main():
-    g = game.Texas_holdem()
-    g.reset(input_players)
+    g = game.Texas_holdem(input_players)
     pygame.init()
     screen = pygame.display.set_mode((dim[0], dim[1]))
     screen.fill(green)
@@ -93,5 +92,6 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(0, 10):
-        main()
+    print("what")
+    # for i in range(0, 10):
+    main()
