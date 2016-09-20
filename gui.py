@@ -4,7 +4,7 @@ import game
 import parameters
 import time
 from player import Player, Other_player, Call_player, Human_player
-from ai import My_AI, My_Experimenter_AI, My_Experimenter_AI2
+from ai import My_Experimenter_AI2, My_All_Inner
 
 white = (255, 64, 64)
 green = (51, 204, 51)
@@ -14,7 +14,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [Call_player(0, "P1", 0), Call_player(1, "P2", 0), Call_player(2, "C3", 0)]
+input_players = [My_Experimenter_AI2(0, "P1", 0), Call_player(1, "P2", 0)]
 
 
 def get_card_image(card):

@@ -1,15 +1,15 @@
 import game
 import numpy as np
-from player import Player, Call_player, Human_player
-from ai import My_AI, My_Experimenter_AI, My_Experimenter_AI2
+from player import Player, Call_player, Human_player, Other_player
+from ai import My_Experimenter_AI2, My_All_Inner
 
-N_games = 100
+N_games = 20
 win_counter = np.zeros(3)
 total_calls, total_folds = 0, 0
 for n in range(N_games):
     print(n)
     g = game.Texas_holdem()
-    input_players = [Call_player(0, "C1", 0), Call_player(1, "Call player 1", 0), Call_player(2, "Call player 2", 0)]
+    input_players = [My_All_Inner(0, "My all inner", 0), Other_player(1, "Call player 1", 0)]
     g.reset(input_players)
     while len(g.players) > 1:
         g.play_one_step()

@@ -57,11 +57,12 @@ class Texas_holdem:
                 blind_value = 0
                 p.bet = 0
                 if p.blind == 2:
-                    blind_value = min(parameters.BIG_BLIND, p.chips)
+                    blind_value = min(parameters.BIG_BLIND, self.find_max_bet())
                 elif p.blind == 1:
-                    blind_value = min(parameters.SMALL_BLIND, p.chips)
+                    blind_value = min(parameters.SMALL_BLIND, self.find_max_bet())
                 self.pot += blind_value
                 p.bet += blind_value
+                p.total_bet += blind_value
                 p.chips -= blind_value
                 p.give_hand(self.deck.draw_card(), self.deck.draw_card())
             for p in self.players:
@@ -134,6 +135,8 @@ class Texas_holdem:
     def clear_players(self):
         for p in self.players:
             if p.chips <= 0:
+                if p.blind == 2:
+                    self.get_next_player(p, self.players).blind = 2
                 self.players.remove(p)
 
     def deal_pot(self, top_players):
@@ -199,22 +202,26 @@ class Texas_holdem:
         max_bet = self.find_max_bet()
         betting_counter = 0
         betting_history = []
+        open_information_players_this_round = []
+        for p_this_round in self.players_this_round:
+            open_information_players_this_round.append(p_this_round.get_open_information())
         while not self.all_pleased(current_bet) or betting_counter < len(self.players_this_round):
             betting_counter += 1
             if current_player is None:
                 current_player = self.get_player_after_big_blind()
             else:
                 current_player = self.get_next_player(current_player, self.players_this_round)
-            new_bet = self.decide_action(betting_history, current_bet, max_bet, current_player)
+            new_bet = self.decide_action(betting_history, current_bet, max_bet, current_player,
+                                         open_information_players_this_round)
             if new_bet is not None:
                 current_bet = new_bet
             max_bet = self.find_max_bet()
         print(betting_history)
         self.all_betting_history.append(betting_history)
 
-    def decide_action(self, betting_history, current_bet, max_bet, p):
+    def decide_action(self, betting_history, current_bet, max_bet, p, open_information_players_this_round):
         board_copy = self.board[:]
-        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), self.players_this_round, self.players,
+        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), open_information_players_this_round,
                               int(self.pot), board_copy)
         bet = min(bet, p.chips)
         if bet >= 0:
@@ -227,7 +234,7 @@ class Texas_holdem:
                 print(p.name, "checking...", "current bet", current_bet)
                 p.bet = 0
             else:
-                print(p.name, "folding...", "current bet", current_bet)
+                print(p.name, "folding...", "current bet", current_bet, self.deal_nr, bet, p.bet, p.chips)
                 # Fold
                 p.bet = -1
                 self.players_this_round.remove(p)
