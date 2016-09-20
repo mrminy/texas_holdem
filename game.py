@@ -220,7 +220,7 @@ class Texas_holdem:
         if bet >= 0:
             p.bet += bet
             p.total_bet += bet
-        betting_history.append([bet, p])
+        betting_history.append([bet, p.id_value])
         if bet <= -1 or p.bet < current_bet:
             if current_bet == 0:
                 # Checking instead of folding
@@ -245,7 +245,7 @@ class Texas_holdem:
 
     def play_one_step(self, logger=False):
         if len(self.players) == 1:
-            print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
+            # print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
             return
         if len(self.players_this_round) <= 1:
             self.new_round()

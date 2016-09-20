@@ -44,7 +44,7 @@ class Player:
         return min(bet, self.chips)
 
     def __str__(self):
-        return str(self.id_value) + ' - card 1: ' + str(self.hand[0]) + ' - card 2: ' + str(
+        return str(self.name) + ' - card 1: ' + str(self.hand[0]) + ' - card 2: ' + str(
             self.hand[1]) + ' - chips: ' + str(self.chips)
 
 
@@ -88,9 +88,13 @@ class Human_player(Player):
                     return 0
                 else:
                     print("Can't select that action\n")
-            else:
+            elif action == 'b':
                 try:
-                    bet = int(input('Place your bet: (current bet is ' + str(current_bet) + ')\n'))
+                    bet = 0
+                    while bet < current_bet:
+                        bet = int(input('Place your bet: (current bet is ' + str(current_bet) + ')\n'))
+                        if bet < current_bet:
+                            print("Can't bet less than current bet. Current bet is", current_bet)
                     return bet
                 except ValueError:
                     print("Not a number...")

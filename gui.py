@@ -12,10 +12,9 @@ black = (10, 10, 10)
 red = (200, 15, 45)
 dim = (1150, 750)
 img_dim = (150, 217)
-running = 1
 
 # Players to play with GUI
-input_players = [Call_player(0, "P1", 0), Human_player(1, "P2", 0)]
+input_players = [Call_player(0, "P1", 0), Call_player(1, "P2", 0), Call_player(2, "C3", 0)]
 
 
 def get_card_image(card):
@@ -28,6 +27,7 @@ def get_card_image(card):
 
 
 def main():
+    running = 1
     g = game.Texas_holdem(input_players)
     pygame.init()
     screen = pygame.display.set_mode((dim[0], dim[1]))
@@ -92,6 +92,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print("what")
-    # for i in range(0, 10):
     main()
