@@ -9,5 +9,5 @@ Required libs:
 - Numpy
 
 Known bugs:
-- Some bug where one player has lower amount of chips than big blind when new round starts. This may cause an internal loop where the player is folding.
+- Bugs when one of the players has a small amount of chips left... (goes into loop)
 
