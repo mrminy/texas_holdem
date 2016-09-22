@@ -35,7 +35,7 @@ def get_card_image(card):
 
 
 def main():
-    running = 1
+    running = True
     pause = 0
     accumulator = 0.0
     frame_start = time.time()
@@ -71,45 +71,46 @@ def main():
                 elif event.key == pygame.K_o:
                     print("resumes game")
                     frame_start = time.time()
+                    accumulator = 0
                     pause = 0
                 elif event.key == pygame.K_n:
                     print("next step")
                     g.play_one_step()
-            screen.fill(green)
-            cards = [g.get_board_card_by_index(0), g.get_board_card_by_index(1), g.get_board_card_by_index(2),
-                     g.get_board_card_by_index(3), g.get_board_card_by_index(4)]
-            if cards[0] is not None:
-                screen.blit(get_card_image(cards[0]), (0, img_dim[1] + 50))
-            if cards[1] is not None:
-                screen.blit(get_card_image(cards[1]), (img_dim[0], img_dim[1] + 50))
-            if cards[2] is not None:
-                screen.blit(get_card_image(cards[2]), (2 * img_dim[0], img_dim[1] + 50))
-            if cards[3] is not None:
-                screen.blit(get_card_image(cards[3]), (3 * img_dim[0], img_dim[1] + 50))
-            if cards[4] is not None:
-                screen.blit(get_card_image(cards[4]), (4 * img_dim[0], img_dim[1] + 50))
-            text_pot = font.render("Pot: " + str(g.pot), 1, (10, 10, 10))
-            screen.blit(text_pot, (10, 220))
+        screen.fill(green)
+        cards = [g.get_board_card_by_index(0), g.get_board_card_by_index(1), g.get_board_card_by_index(2),
+                 g.get_board_card_by_index(3), g.get_board_card_by_index(4)]
+        if cards[0] is not None:
+            screen.blit(get_card_image(cards[0]), (0, img_dim[1] + 50))
+        if cards[1] is not None:
+            screen.blit(get_card_image(cards[1]), (img_dim[0], img_dim[1] + 50))
+        if cards[2] is not None:
+            screen.blit(get_card_image(cards[2]), (2 * img_dim[0], img_dim[1] + 50))
+        if cards[3] is not None:
+            screen.blit(get_card_image(cards[3]), (3 * img_dim[0], img_dim[1] + 50))
+        if cards[4] is not None:
+            screen.blit(get_card_image(cards[4]), (4 * img_dim[0], img_dim[1] + 50))
+        text_pot = font.render("Pot: " + str(g.pot), 1, (10, 10, 10))
+        screen.blit(text_pot, (10, 220))
 
-            for i, p in enumerate(g.players):
-                text_color = black
-                if p.chips <= 0:
-                    text_color = red
-                text_p1 = font.render("Chips: " + str(p.chips), 1, text_color)
-                screen.blit(text_p1, player_text_pos[i][0])
-                text_t2 = font.render("Bet: " + str(p.total_bet), 1, text_color)
-                screen.blit(text_t2, player_text_pos[i][1])
-                text_t3 = font.render("Name: " + str(p.name), 1, text_color)
-                screen.blit(text_t3, player_text_pos[i][2])
-                if p.bet >= 0:
-                    screen.blit(get_card_image(p.hand[0]), player_cards_pos[i][0])
-                    screen.blit(get_card_image(p.hand[1]), player_cards_pos[i][1])
+        for i, p in enumerate(g.players):
+            text_color = black
+            if p.chips <= 0:
+                text_color = red
+            text_p1 = font.render("Chips: " + str(p.chips), 1, text_color)
+            screen.blit(text_p1, player_text_pos[i][0])
+            text_t2 = font.render("Bet: " + str(p.total_bet), 1, text_color)
+            screen.blit(text_t2, player_text_pos[i][1])
+            text_t3 = font.render("Name: " + str(p.name), 1, text_color)
+            screen.blit(text_t3, player_text_pos[i][2])
+            if p.bet >= 0:
+                screen.blit(get_card_image(p.hand[0]), player_cards_pos[i][0])
+                screen.blit(get_card_image(p.hand[1]), player_cards_pos[i][1])
 
-            pygame.display.flip()
+        pygame.display.flip()
 
-            current_time = time.time()
-            accumulator += current_time - frame_start
-            frame_start = current_time
+        current_time = time.time()
+        accumulator += current_time - frame_start
+        frame_start = current_time
 
         if accumulator > parameters.FPS and pause == 0:
             # Do game stuff...
