@@ -58,6 +58,7 @@ class Texas_holdem:
                 self.players_this_round.append(p)
                 blind_value = 0
                 p.bet = 0
+                p.total_bet = 0
                 if p.blind == 2:
                     blind_value = min(parameters.BIG_BLIND, self.find_max_bet(0))
                 elif p.blind == 1:
