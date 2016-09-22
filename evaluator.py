@@ -1,6 +1,13 @@
 import parameters
 
 
+def simple_evaluate(cards):
+    result = evaluate(cards)
+    if len(result) > 0:
+        return result[0]
+    return -1
+
+
 def evaluate(cards):
     if len(cards) < 5:
         return None
@@ -200,4 +207,3 @@ def check_one_pair(cards):
 def high_card(cards):
     cards.sort(key=lambda x: x[1], reverse=True)
     return parameters.EVAL_VALUES[8], cards[0:5]
-
