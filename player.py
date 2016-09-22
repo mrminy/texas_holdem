@@ -74,6 +74,15 @@ class Call_player(Player):
             return parameters.BIG_BLIND
         return current_bet - self.bet
 
+class Raiser_player(Player):
+    """
+    Used for testing og debugging. Always calls
+    """
+
+    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise,  players_this_round, pot, board):
+        bet = min(min_raise, self.chips)
+        return bet*2
+
 
 class Human_player(Player):
     """

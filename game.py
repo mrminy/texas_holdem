@@ -227,7 +227,7 @@ class Texas_holdem:
                                              open_information_players_this_round)
                 if new_bet is not None:
                     if new_bet > current_bet:
-                        min_raise = new_bet-current_bet
+                        min_raise = new_bet - current_bet
                     current_bet = new_bet
 
             max_bet = self.find_max_bet(current_bet)
@@ -241,7 +241,7 @@ class Texas_holdem:
         bet = p.make_decision(betting_history, int(current_bet), int(max_bet), int(min_bet), int(min_raise),
                               open_information_players_this_round, int(self.pot), board_copy)
         bet = min(bet, p.chips)
-        bet = min(max_bet, bet)
+        bet = min(max_bet - p.bet, bet)
         if bet > 0:
             if bet < min_bet:
                 # If bet is smaller than minimum bet, bet is equal to calling
@@ -273,7 +273,7 @@ class Texas_holdem:
                 if p.chips == 0:
                     print("All in:", p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, str(self))
                 else:
-                    print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet)
+                    print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, "max bet", max_bet)
 
             betting_history.append([bet, p.id_value])
             return p.bet

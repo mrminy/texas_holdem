@@ -1,7 +1,7 @@
 """
 How to use:
     - To pause: hit 'P'
-    - To resume: hit 'U'
+    - To resume: hit 'O'
     - To do next step: hit 'N'
     - To play against AI: add Human_player to input_players and play in command line
 """""
@@ -61,7 +61,8 @@ def main():
     font = pygame.font.Font(None, 34)
 
     while running:
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == QUIT:
                 return
             if event.type == pygame.KEYDOWN:
@@ -73,7 +74,7 @@ def main():
                     frame_start = time.time()
                     accumulator = 0
                     pause = 0
-                elif event.key == pygame.K_n:
+                elif event.key == pygame.K_n and pause == 1:
                     print("next step")
                     g.play_one_step()
         screen.fill(green)
