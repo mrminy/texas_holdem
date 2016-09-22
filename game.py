@@ -46,6 +46,7 @@ class Texas_holdem:
         return None
 
     def new_round(self):
+        print(self)
         if len(self.players) > 1:
             self.players_this_round = []
             self.deal_nr = 0
@@ -58,16 +59,16 @@ class Texas_holdem:
                 blind_value = 0
                 p.bet = 0
                 if p.blind == 2:
-                    blind_value = min(parameters.BIG_BLIND, self.find_max_bet())
+                    blind_value = min(parameters.BIG_BLIND, self.find_max_bet(0))
                 elif p.blind == 1:
-                    blind_value = min(parameters.SMALL_BLIND, self.find_max_bet())
+                    blind_value = min(parameters.SMALL_BLIND, self.find_max_bet(0))
                 self.pot += blind_value
                 p.bet += blind_value
                 p.total_bet += blind_value
                 p.chips -= blind_value
                 p.give_hand(self.deck.draw_card(), self.deck.draw_card())
                 if self.logger:
-                    print(p.name, " - Hand:", p.hand)
+                    print(str(p))
             for p in self.players:
                 if p.id_value == self.big_blind_id:
                     p.blind = 1
@@ -194,16 +195,21 @@ class Texas_holdem:
                 return False
         return True
 
-    def find_max_bet(self):
+    def find_max_bet(self, current_bet):
         max_bet = 999999999  # Just a randomly selected high number
         for p in self.players_this_round:
-            if p.chips != 0 and p.chips < max_bet:
-                max_bet = p.chips
+            if p.chips < max_bet:
+                if p.chips == 0:
+                    max_bet = current_bet
+                else:
+                    max_bet = p.chips
         return max(max_bet, 0)
 
     def betting(self, current_bet):
         current_player = None
-        max_bet = self.find_max_bet()
+        max_bet = self.find_max_bet(0)
+        min_bet = parameters.MIN_BET
+        min_raise = min_bet
         betting_counter = 0
         betting_history = []
         open_information_players_this_round = []
@@ -216,25 +222,35 @@ class Texas_holdem:
             else:
                 current_player = self.get_next_player(current_player, self.players_this_round)
             if current_player.chips > 0:
-                new_bet = self.decide_action(betting_history, current_bet, max_bet, current_player,
+                new_bet = self.decide_action(betting_history, current_bet, max_bet, min_bet, min_raise, current_player,
                                              open_information_players_this_round)
                 if new_bet is not None:
+                    if new_bet > current_bet:
+                        min_raise = new_bet-current_bet
                     current_bet = new_bet
-            max_bet = self.find_max_bet()
-        if self.logger:
-            print(betting_history)
+
+            max_bet = self.find_max_bet(current_bet)
+        # if self.logger:
+        #     print(betting_history)
         self.all_betting_history.append(betting_history)
 
-    def decide_action(self, betting_history, current_bet, max_bet, p, open_information_players_this_round):
+    def decide_action(self, betting_history, current_bet, max_bet, min_bet, min_raise, p,
+                      open_information_players_this_round):
         board_copy = self.board[:]
-        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), open_information_players_this_round,
-                              int(self.pot), board_copy)
+        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), int(min_bet), int(min_raise),
+                              open_information_players_this_round, int(self.pot), board_copy)
         bet = min(bet, p.chips)
         bet = min(max_bet, bet)
-        if bet >= 0:
+        if bet > 0:
+            if bet < min_bet:
+                # If bet is smaller than minimum bet, bet is equal to calling
+                bet = current_bet - p.bet
+            elif current_bet - p.bet < bet < current_bet - p.bet + min_raise:
+                # If raising, you are automatically raising the minimum raise
+                bet = current_bet - p.bet + min_raise
+            bet = int(bet)
             p.bet += bet
             p.total_bet += bet
-        betting_history.append([bet, p.id_value])
         if bet <= -1 or p.bet < current_bet:
             if current_bet == 0:
                 # Checking instead of folding
@@ -243,15 +259,22 @@ class Texas_holdem:
                 p.bet = 0
             else:
                 if self.logger:
-                    print(p.name, "folding...", "current bet", current_bet, self.deal_nr, bet, p.bet, p.chips)
+                    print(p.name, "folding...", "current bet", current_bet, self.deal_nr, bet, p.bet, p.chips, max_bet,
+                          min_bet, min_raise)
                 # Fold
                 p.bet = -1
                 self.players_this_round.remove(p)
+            betting_history.append([bet, p.id_value])
         else:
             p.chips -= bet
             self.pot += bet
             if self.logger:
-                print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, )
+                if p.chips == 0:
+                    print("All in:", p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, str(self))
+                else:
+                    print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet)
+
+            betting_history.append([bet, p.id_value])
             return p.bet
 
     def player_all_in(self):
@@ -282,3 +305,10 @@ class Texas_holdem:
                 print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
                 return
             self.new_round()
+
+    def __str__(self):
+        str_out = "Round nr: " + str(self.round_nr) + ", deal nr: " + str(self.deal_nr)
+        if len(self.players[0].hand) > 0:
+            for p in self.players:
+                str_out += " - " + str(p)
+        return str_out

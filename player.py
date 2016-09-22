@@ -28,7 +28,7 @@ class Player:
         return {'id_value': self.id_value, 'name': self.name, 'blind': self.blind, 'chips': self.chips, 'bet': self.bet,
                 'total_bet': self.total_bet}
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
         """
         This represents a total random player
         :param betting_history: betting history for this betting round
@@ -57,7 +57,7 @@ class Other_player(Player):
     Used for testing og debugging
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet,  min_bet, min_raise, players_this_round, pot, board):
         if len(board) == 0:
             return current_bet - self.bet
         else:
@@ -69,7 +69,7 @@ class Call_player(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise,  players_this_round, pot, board):
         if current_bet == 0:
             return parameters.BIG_BLIND
         return current_bet - self.bet
@@ -81,7 +81,7 @@ class Human_player(Player):
     (when bet is chosen, you can choose the amount of chips to bet)
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise,  players_this_round, pot, board):
         while True:
             action = input('Choose your action: (f=fold, c=check, b=bet) (current bet is ' + str(current_bet) + ')\n')
 
