@@ -182,8 +182,8 @@ class rules(object):
                     highcard[4] = index1
             if highcard[0] > 0:
                 self.winner.update_Score(a, (
-                (1 / highcard[4]) * 100000 + (1 / highcard[3]) * 10000 + (1 / highcard[2]) * 1000 + (
-                1 / highcard[2]) * 100 + (1 / highcard[1]) * 10) * -1)
+                    (1 / highcard[4]) * 100000 + (1 / highcard[3]) * 10000 + (1 / highcard[2]) * 1000 + (
+                        1 / highcard[2]) * 100 + (1 / highcard[1]) * 10) * -1)
 
             # Highcard Needed
             ekstraCardsScore = self.winner.see_Score(a)
