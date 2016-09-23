@@ -13,7 +13,11 @@ class Texas_holdem:
         self.players = []
         self.players_this_round = []
         self.round_nr = 0
+        self.current_player = None
+        self.current_bet = 0
         self.deal_nr = 0
+        self.all_in_nr = -1
+        self.min_raise = 0
         self.big_blind_id = 0
         self.logger = logger
         self.reset(input_players)
@@ -25,6 +29,10 @@ class Texas_holdem:
         self.pot = 0
         self.round_nr = 0
         self.deal_nr = 0
+        self.all_in_nr = -1
+        self.current_player = None
+        self.current_bet = 0
+        self.min_raise = 0
         self.big_blind_id = 0
         self.players_this_round = []
         self.players = []
@@ -46,7 +54,10 @@ class Texas_holdem:
         return None
 
     def new_round(self):
-        print(self)
+        if self.logger:
+            print(self)
+            if self.players_this_round is not None and len(self.players_this_round) > 0:
+                print("Winner of round: ", self.players_this_round[0])
         if len(self.players) > 1:
             self.players_this_round = []
             self.deal_nr = 0
@@ -54,31 +65,34 @@ class Texas_holdem:
             self.deck.reset_deck()
             self.board = []
             self.pot = 0
+            self.all_in_nr = -1
+            self.all_betting_history.append([])
+            self.min_raise = parameters.MIN_BET
+
+            # Switching blinds in group
+            for p in self.players:
+                if p.id_value == self.big_blind_id:
+                    p.blind = 1
+                    next_p = self.get_next_player(p, self.players)
+                    next_p.blind = 2
+                    self.big_blind_id = next_p.id_value
+                    if len(self.players_this_round) > 2:
+                        self.get_previous_player(p, self.players).blind = 0
+                    break
+            # Making ready for new round (paying blinds)
             for i, p in enumerate(self.players):
                 self.players_this_round.append(p)
                 blind_value = 0
                 p.bet = 0
-                p.total_bet = 0
                 if p.blind == 2:
-                    blind_value = min(parameters.BIG_BLIND, self.find_max_bet(0))
+                    blind_value = min(parameters.BIG_BLIND, self.find_max_raise())
                 elif p.blind == 1:
-                    blind_value = min(parameters.SMALL_BLIND, self.find_max_bet(0))
+                    blind_value = min(parameters.SMALL_BLIND, self.find_max_raise())
                 self.pot += blind_value
                 p.bet += blind_value
-                p.total_bet += blind_value
                 p.chips -= blind_value
                 p.give_hand(self.deck.draw_card(), self.deck.draw_card())
-                if self.logger:
-                    print(str(p))
-            for p in self.players:
-                if p.id_value == self.big_blind_id:
-                    p.blind = 1
-                    next_p = self.get_next_player(p, self.players_this_round)
-                    next_p.blind = 2
-                    self.big_blind_id = next_p.id_value
-                    if len(self.players_this_round) > 2:
-                        self.get_previous_player(p, self.players_this_round).blind = 0
-                    break
+            self.current_bet = parameters.BIG_BLIND
 
     def dealer_step(self):
         if self.deal_nr == 0:
@@ -86,10 +100,7 @@ class Texas_holdem:
             self.board.append(self.deck.draw_card())
             self.board.append(self.deck.draw_card())
             self.board.append(self.deck.draw_card())
-        if self.deal_nr == 1:
-            # Deal 1 card
-            self.board.append(self.deck.draw_card())
-        if self.deal_nr == 2:
+        if self.deal_nr == 1 or self.deal_nr == 2:
             # Deal 1 card
             self.board.append(self.deck.draw_card())
         for p in self.players:
@@ -155,6 +166,7 @@ class Texas_holdem:
             for p in top_players:
                 p.chips += split
             self.pot = 0
+            # print("whut")
 
     def fetch_cards_for_player(self, player):
         cards = []
@@ -166,11 +178,13 @@ class Texas_holdem:
 
     def get_player_after_big_blind(self):
         for i, p in enumerate(self.players_this_round):
-            if p.id_value > self.big_blind_id:
-                return p
+            if p.blind == 2:
+                return self.get_next_player(p, self.players_this_round)
         return self.players_this_round[0]
 
     def get_next_player(self, current_player, player_array):
+        if current_player is None:
+            return player_array[0]
         index = current_player.id_value
         for i, p in enumerate(player_array):
             if p.id_value > index:
@@ -188,124 +202,141 @@ class Texas_holdem:
                 return p
         return player_array[len(player_array) - 1]
 
-    def all_pleased(self, current_bet):
+    def all_pleased(self):
         if len(self.players_this_round) == 1:
             return True
+        if self.is_all_in() and self.deal_nr != self.all_in_nr:
+            return True
         for p in self.players_this_round:
-            if p.bet < current_bet:
+            if p.bet < self.current_bet:
                 return False
         return True
 
-    def find_max_bet(self, current_bet):
-        max_bet = 999999999  # Just a randomly selected high number
+    def find_min_bet(self):
+        min_value = parameters.MIN_BET
         for p in self.players_this_round:
-            if p.chips < max_bet:
-                if p.chips == 0:
-                    max_bet = current_bet
-                else:
-                    max_bet = p.chips
-        return max(max_bet, 0)
+            if p.chips < parameters.MIN_BET:
+                min_value = p.chips
+        return min_value
 
-    def betting(self, current_bet):
-        current_player = None
-        max_bet = self.find_max_bet(0)
-        min_bet = parameters.MIN_BET
-        min_raise = min_bet
-        betting_counter = 0
-        betting_history = []
-        open_information_players_this_round = []
-        for p_this_round in self.players_this_round:
-            open_information_players_this_round.append(p_this_round.get_open_information())
-        while not self.all_pleased(current_bet) or betting_counter < len(self.players_this_round):
-            betting_counter += 1
-            if current_player is None:
-                current_player = self.get_player_after_big_blind()
-            else:
-                current_player = self.get_next_player(current_player, self.players_this_round)
-            if current_player.chips > 0:
-                new_bet = self.decide_action(betting_history, current_bet, max_bet, min_bet, min_raise, current_player,
-                                             open_information_players_this_round)
-                if new_bet is not None:
-                    if new_bet > current_bet:
-                        min_raise = new_bet - current_bet
-                    current_bet = new_bet
+    def find_max_bet(self):
+        max_value = 999999999
+        for p in self.players_this_round:
+            if p.bet + p.chips < max_value:
+                max_value = p.chips + p.bet
+        return max_value
 
-            max_bet = self.find_max_bet(current_bet)
-        # if self.logger:
-        #     print(betting_history)
-        self.all_betting_history.append(betting_history)
+    def find_max_raise(self):
+        max_raise = 999999999
+        for p in self.players_this_round:
+            if p.chips < max_raise:
+                max_raise = p.chips
+        return max_raise
 
-    def decide_action(self, betting_history, current_bet, max_bet, min_bet, min_raise, p,
-                      open_information_players_this_round):
-        board_copy = self.board[:]
-        bet = p.make_decision(betting_history, int(current_bet), int(max_bet), int(min_bet), int(min_raise),
-                              open_information_players_this_round, int(self.pot), board_copy)
-        bet = min(bet, p.chips)
-        bet = min(max_bet - p.bet, bet)
-        if bet > 0:
-            if bet < min_bet:
-                # If bet is smaller than minimum bet, bet is equal to calling
-                bet = current_bet - p.bet
-            elif current_bet - p.bet < bet < current_bet - p.bet + min_raise:
-                # If raising, you are automatically raising the minimum raise
-                bet = current_bet - p.bet + min_raise
-            bet = int(bet)
-            p.bet += bet
-            p.total_bet += bet
-        if bet <= -1 or p.bet < current_bet:
-            if current_bet == 0:
-                # Checking instead of folding
-                if self.logger:
-                    print(p.name, "checking...", "current bet", current_bet)
-                p.bet = 0
-            else:
-                if self.logger:
-                    print(p.name, "folding...", "current bet", current_bet, self.deal_nr, bet, p.bet, p.chips, max_bet,
-                          min_bet, min_raise)
-                # Fold
-                p.bet = -1
-                self.players_this_round.remove(p)
-            betting_history.append([bet, p.id_value])
-        else:
-            p.chips -= bet
-            self.pot += bet
-            if self.logger:
-                if p.chips == 0:
-                    print("All in:", p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, str(self))
-                else:
-                    print(p.name, "betting", bet, "in total", p.bet, "current bet", current_bet, "max bet", max_bet)
-
-            betting_history.append([bet, p.id_value])
-            return p.bet
-
-    def player_all_in(self):
+    def is_all_in(self):
         for p in self.players_this_round:
             if p.chips <= 0:
                 return True
         return False
 
-    def play_one_step(self, logger=False):
+    def bet(self):
+        board_copy = self.board[:]
+        open_information_players_this_round = []
+        max_raise = self.find_max_raise()
+        min_bet = self.find_min_bet()
+        for p_this_round in self.players_this_round:
+            open_information_players_this_round.append(p_this_round.get_open_information())
+        original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet),
+                                                         int(max_raise), int(min_bet), int(min_bet),
+                                                         open_information_players_this_round, int(self.pot), board_copy)
+        if original_bet is None:
+            print(self.current_player, "ERROR!! Returned None!!")
+            original_bet = -1
+        original_bet = int(original_bet)
+        if self.logger:
+            print(self.current_player, "original bet:", original_bet)
+
+        modded_bet = min(min(original_bet, self.current_player.chips), self.find_max_bet())
+        is_all_in = self.is_all_in()
+        if is_all_in and modded_bet + self.current_player.bet > self.current_bet:
+            modded_bet = self.current_bet - self.current_player.bet
+
+        if modded_bet + self.current_player.bet > self.current_bet:
+            # Raising
+            if modded_bet < min_bet:
+                # Raising too low
+                if self.logger:
+                    print("går lower than min_bet", original_bet, modded_bet, min_bet)
+                modded_bet = min_bet
+            elif modded_bet + self.current_player.bet > max_raise:
+                # Raising too high
+                if self.logger:
+                    print("går lower than min_bet", original_bet, modded_bet, self.current_player.bet, max_raise)
+                modded_bet = (modded_bet + self.current_player.bet) - max_raise
+            self.current_player.bet += modded_bet
+            self.current_player.chips -= modded_bet
+            self.pot += modded_bet
+            self.min_raise = modded_bet
+            self.current_bet = self.current_player.bet
+            if self.logger:
+                print(self.current_player, "raising...", modded_bet)
+        elif modded_bet + self.current_player.bet == self.current_bet:
+            # Calling
+            if modded_bet < min_bet and modded_bet != 0:
+                modded_bet = min_bet
+            self.current_player.bet += modded_bet
+            self.current_player.chips -= modded_bet
+            self.pot += modded_bet
+            if self.logger:
+                print(self.current_player, "calling...", modded_bet)
+        elif modded_bet == 0 and self.current_bet == 0:
+            # Checking
+            if self.logger:
+                print(self.current_player, "checking...")
+            pass
+        else:
+            if self.current_bet != 0:
+                # Folding
+                if self.logger:
+                    print(self.current_player, "folding...")
+                self.current_player.bet = 0
+                self.players_this_round.remove(self.current_player)
+        if self.current_player.chips <= 0:
+            self.all_in_nr = self.deal_nr
+        self.all_betting_history[-1].append([modded_bet, self.current_player.id_value])
+
+    def play_one_step(self):
         if len(self.players) == 1:
-            # print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
+            if self.logger:
+                print("Finished! Only one left.", self.players[0])
             return
-        if len(self.players_this_round) <= 1:
-            self.new_round()
-            return
-        current_bet = 0
-        if self.deal_nr == 0:
-            current_bet = parameters.BIG_BLIND
-        if not self.player_all_in():
-            self.betting(current_bet)
-        self.dealer_step()
-        if self.deal_nr == 4 or len(self.players_this_round) == 1:
-            if logger and self.logger:
+        if self.deal_nr >= 4 or len(self.players_this_round) == 1:
+            if self.logger:
                 print("Pot: ", self.pot, " - board: ", self.board)
             self.who_wins()
             self.clear_players()
             if len(self.players) == 1:
                 print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
                 return
+            if self.logger:
+                print("New round, after full flop...")
             self.new_round()
+            return
+        if self.all_pleased():
+            # Deal cards...
+            if self.logger:
+                print("All pleased. Deal cards")
+            self.dealer_step()
+            return
+
+        # Make next player bid, fold or check
+        self.current_player = self.get_next_player(self.current_player, self.players_this_round)
+        if self.current_player.chips != 0:
+            if self.logger:
+                print("Betting...", self.current_player)
+            self.bet()
+            if self.logger:
+                print(self)
 
     def __str__(self):
         str_out = "Round nr: " + str(self.round_nr) + ", deal nr: " + str(self.deal_nr)

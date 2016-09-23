@@ -16,7 +16,6 @@ class Player:
         self.blind = 0  # 0 = no blind, 1 = small blind, 2 = big blind
         self.chips = chips  # current amount of chips to bet
         self.bet = 0  # Current bet in this betting round
-        self.total_bet = 0  # Current bet in this betting round
 
     def give_hand(self, card1, card2):
         self.hand = [card1, card2]
@@ -25,8 +24,7 @@ class Player:
         return self.hand
 
     def get_open_information(self):
-        return {'id_value': self.id_value, 'name': self.name, 'blind': self.blind, 'chips': self.chips, 'bet': self.bet,
-                'total_bet': self.total_bet}
+        return {'id_value': self.id_value, 'name': self.name, 'blind': self.blind, 'chips': self.chips, 'bet': self.bet}
 
     def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
         """
@@ -49,7 +47,7 @@ class Player:
 
     def __str__(self):
         return str(self.name) + ' - card 1: ' + str(self.hand[0]) + ' - card 2: ' + str(
-            self.hand[1]) + ' - chips: ' + str(self.chips)
+            self.hand[1]) + ' - blind: ' + str(self.blind) + ' - chips: ' + str(self.chips)
 
 
 class Other_player(Player):

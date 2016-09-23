@@ -9,5 +9,5 @@ Required libs:
 - Numpy
 
 Known bugs:
-- Bugs when one of the players has a small amount of chips left... (goes into loop)
+
 

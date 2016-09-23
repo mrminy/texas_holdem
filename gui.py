@@ -8,11 +8,13 @@ How to use:
 
 import pygame
 from pygame.locals import *
-import game
+import game2 as game
 import parameters
 import time
 from player import Player, Other_player, Call_player, Human_player
-# from ai import My_Experimenter_AI2, My_All_Inner
+from mikkel_ai import My_Experimenter_AI2, My_All_Inner
+from marius_ai.marius_ai import ai as marius_ai
+from johannes_ai import pokerAI as johannes_ai
 
 white = (255, 64, 64)
 green = (51, 204, 51)
@@ -22,7 +24,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [Call_player(0, "P1", 0), Call_player(1, "P2", 0)]
+input_players = [My_Experimenter_AI2(0, "Mikkel AI", 0), johannes_ai(1, "Johannes AI", 0)]
 
 
 def get_card_image(card):
@@ -99,7 +101,7 @@ def main():
                 text_color = red
             text_p1 = font.render("Chips: " + str(p.chips), 1, text_color)
             screen.blit(text_p1, player_text_pos[i][0])
-            text_t2 = font.render("Bet: " + str(p.total_bet), 1, text_color)
+            text_t2 = font.render("Bet: " + str(p.bet), 1, text_color)
             screen.blit(text_t2, player_text_pos[i][1])
             text_t3 = font.render("Name: " + str(p.name), 1, text_color)
             screen.blit(text_t3, player_text_pos[i][2])
@@ -113,10 +115,10 @@ def main():
         accumulator += current_time - frame_start
         frame_start = current_time
 
-        if accumulator > parameters.FPS and pause == 0:
+        if accumulator > parameters.FRAME_DELAY and pause == 0:
             # Do game stuff...
             g.play_one_step()
-            accumulator -= parameters.FPS
+            accumulator -= parameters.FRAME_DELAY
 
 
 if __name__ == '__main__':
