@@ -130,19 +130,15 @@ def check_straight(cards):
             return parameters.EVAL_VALUES[4], straight_cards
     # Handle ace...
     if cards[0][1] == 14:
+        value_arr = [2, 3, 4, 5]
+        straight_cards = []
         for i, c in enumerate(cards):
-            counter = 0
-            straight_cards = [c]
-            current_value = c[1]
-            while counter < 3:
-                for j in range(i + 1, len(cards)):
-                    if cards[j][1] + 1 == current_value:
-                        current_value = cards[j][1]
-                        straight_cards.append(cards[j])
-                counter += 1
-            if len(straight_cards) == 4:
-                straight_cards.append(cards[0])
-                return parameters.EVAL_VALUES[4], straight_cards
+            for value in value_arr:
+                if c[1] == value:
+                    straight_cards.append(c)
+        if len(straight_cards) == 4:
+            straight_cards.append(cards[0])
+            return parameters.EVAL_VALUES[4], straight_cards
     return 0, []
 
 
