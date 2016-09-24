@@ -242,12 +242,12 @@ class Texas_holdem:
     def bet(self):
         board_copy = self.board[:]
         open_information_players_this_round = []
-        max_raise = self.find_max_raise()
+        max_bet = self.find_max_bet()
         min_bet = self.find_min_bet()
         for p_this_round in self.players_this_round:
             open_information_players_this_round.append(p_this_round.get_open_information())
         original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet),
-                                                         int(max_raise), int(min_bet), int(min_bet),
+                                                         int(max_bet), int(min_bet),
                                                          open_information_players_this_round, int(self.pot), board_copy)
         if original_bet is None:
             print(self.current_player, "ERROR!! Returned None!!")
@@ -268,11 +268,11 @@ class Texas_holdem:
                 if self.logger:
                     print("bet is lower than min_bet", original_bet, modded_bet, min_bet)
                 modded_bet = min_bet
-            elif modded_bet + self.current_player.bet > max_raise:
+            elif modded_bet > max_bet:
                 # Raising too high
                 if self.logger:
-                    print("bet is higher than max_raise", original_bet, modded_bet, self.current_player.bet, max_raise)
-                modded_bet = min(self.current_player.chips, max_raise)
+                    print("bet is higher than max_bet", original_bet, modded_bet, self.current_player.bet, max_raise, max_bet)
+                modded_bet = min(self.current_player.chips, max_bet)
             self.current_player.bet += modded_bet
             self.current_player.chips -= modded_bet
             self.pot += modded_bet

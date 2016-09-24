@@ -1,5 +1,5 @@
 """
-AI coded by Mikkel Nylend
+AI written by Mikkel Nylend
 """
 
 import numpy as np
