@@ -1,3 +1,5 @@
+import time
+
 from player import Player
 import parameters
 import evaluator
@@ -16,6 +18,7 @@ class Texas_holdem:
         self.current_player = None
         self.current_bet = 0
         self.deal_nr = 0
+        self.previous_raise = 0
         self.all_in_nr = -1
         self.min_raise = 0
         self.big_blind_id = 0
@@ -33,6 +36,7 @@ class Texas_holdem:
         self.current_player = None
         self.current_bet = 0
         self.min_raise = 0
+        self.previous_raise = 0
         self.big_blind_id = 0
         self.players_this_round = []
         self.players = []
@@ -65,6 +69,7 @@ class Texas_holdem:
             self.deck.reset_deck()
             self.board = []
             self.pot = 0
+            self.previous_raise = 0
             self.all_in_nr = -1
             self.all_betting_history.append([])
             self.min_raise = parameters.MIN_BET
@@ -246,9 +251,14 @@ class Texas_holdem:
         min_bet = self.find_min_bet()
         for p_this_round in self.players_this_round:
             open_information_players_this_round.append(p_this_round.get_open_information())
+        start_time = time.time()
         original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet),
-                                                         int(max_bet), int(min_bet),
+                                                         int(max_bet), int(min_bet), int(0),
                                                          open_information_players_this_round, int(self.pot), board_copy)
+        used_time = time.time()-start_time
+        if used_time > 1.0:
+            print("Player used longer than 1 second to decide. Counts as fold...", self.current_player)
+            original_bet = -1
         if original_bet is None:
             print(self.current_player, "ERROR!! Returned None!!")
             original_bet = -1
@@ -263,6 +273,10 @@ class Texas_holdem:
 
         if modded_bet + self.current_player.bet > self.current_bet:
             # Raising
+            if modded_bet < self.previous_raise:
+                if self.logger:
+                    print("bet is lower than previous raise", original_bet, modded_bet, self.previous_raise)
+                modded_bet = self.previous_raise
             if modded_bet < min_bet:
                 # Raising too low
                 if self.logger:
@@ -271,12 +285,12 @@ class Texas_holdem:
             elif modded_bet > max_bet:
                 # Raising too high
                 if self.logger:
-                    print("bet is higher than max_bet", original_bet, modded_bet, self.current_player.bet, max_raise, max_bet)
+                    print("bet is higher than max_bet", original_bet, modded_bet, self.current_player.bet, max_bet)
                 modded_bet = min(self.current_player.chips, max_bet)
             self.current_player.bet += modded_bet
             self.current_player.chips -= modded_bet
             self.pot += modded_bet
-            self.min_raise = modded_bet
+            self.previous_raise = modded_bet
             self.current_bet = self.current_player.bet
             if self.logger:
                 print(self.current_player, "raising...", modded_bet)

@@ -14,7 +14,7 @@ win_counter = np.zeros(3)
 for n in range(N_games):
     print("Game nr:", n)
     g = game.Texas_holdem(logger=False)
-    input_players = [johannes_ai(0, "Johannes AI", 0), mikkel_ai(1, "Mikkel AI", 0)]
+    input_players = [johannes_ai(0, "Johannes AI", 0), marius_ai(1, "Marius AI", 0)]
     g.reset(input_players)
     while len(g.players) > 1:
         g.play_one_step()
