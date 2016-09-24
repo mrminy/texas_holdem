@@ -339,7 +339,7 @@ class Texas_holdem:
                 print(self)
 
     def __str__(self):
-        str_out = "Round nr: " + str(self.round_nr) + ", deal nr: " + str(self.deal_nr)
+        str_out = "Round nr: " + str(self.round_nr) + ", deal nr: " + str(self.deal_nr) + ", board: " + str(self.board)
         if len(self.players[0].hand) > 0:
             for p in self.players:
                 str_out += " - " + str(p)
