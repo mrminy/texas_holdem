@@ -266,13 +266,13 @@ class Texas_holdem:
             if modded_bet < min_bet:
                 # Raising too low
                 if self.logger:
-                    print("går lower than min_bet", original_bet, modded_bet, min_bet)
+                    print("bet is lower than min_bet", original_bet, modded_bet, min_bet)
                 modded_bet = min_bet
             elif modded_bet + self.current_player.bet > max_raise:
                 # Raising too high
                 if self.logger:
-                    print("går lower than min_bet", original_bet, modded_bet, self.current_player.bet, max_raise)
-                modded_bet = (modded_bet + self.current_player.bet) - max_raise
+                    print("bet is higher than max_raise", original_bet, modded_bet, self.current_player.bet, max_raise)
+                modded_bet = min(self.current_player.chips, max_raise)
             self.current_player.bet += modded_bet
             self.current_player.chips -= modded_bet
             self.pot += modded_bet
