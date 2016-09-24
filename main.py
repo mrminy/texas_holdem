@@ -1,6 +1,6 @@
 import time
 
-import game2 as game
+import game
 import numpy as np
 from player import Player, Call_player, Human_player, Other_player
 from mikkel_ai import My_Experimenter_AI2, My_All_Inner

@@ -8,7 +8,7 @@ How to use:
 
 import pygame
 from pygame.locals import *
-import game2 as game
+import game
 import parameters
 import time
 from player import Player, Other_player, Call_player, Human_player
