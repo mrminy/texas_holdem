@@ -24,7 +24,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [My_Experimenter_AI2(0, "Mikkel AI", 0), johannes_ai(1, "Johannes AI", 0)]
+input_players = [marius_ai(0, "Marius AI", 0), johannes_ai(1, "Johannes AI", 0)]
 
 
 def get_card_image(card):
@@ -117,7 +117,8 @@ def main():
 
         if accumulator > parameters.FRAME_DELAY and pause == 0:
             # Do game stuff...
-            g.play_one_step()
+            if len(g.players) > 1:
+                g.play_one_step()
             accumulator -= parameters.FRAME_DELAY
 
 
