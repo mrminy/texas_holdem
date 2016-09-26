@@ -11,10 +11,12 @@ start_time = time.time()
 N_games = 100
 win_counter = np.zeros(3)
 
+input_players = []
+
 for n in range(N_games):
     print("Game nr:", n)
     g = game.Texas_holdem(logger=False)
-    input_players = [johannes_ai(0, "Johannes AI", 0), marius_ai(1, "Marius AI", 0)]
+    input_players = [mikkel_ai(0, "Mikkel AI", 0), johannes_ai(1, "Johannes AI", 0)]
     g.reset(input_players)
     while len(g.players) > 1:
         g.play_one_step()
@@ -22,4 +24,5 @@ for n in range(N_games):
     win_counter[p_id] += 1
 
 print(win_counter)
+print(input_players)
 print(time.time()-start_time)

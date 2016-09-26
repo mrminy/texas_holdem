@@ -106,7 +106,7 @@ class My_Experimenter_AI2(Player):
             equity = loose_ratio / win_ratio
         else:
             equity = float('inf')
-        round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 0.95]
+        round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 1.0]
         equity *= round_score[len(board)]
 
         if current_bet - max(0, self.bet) != 0:
@@ -126,6 +126,8 @@ class My_Experimenter_AI2(Player):
             self.self_calls += 1
         else:
             self.self_folds += 1
+        if parameters.RECORD_GAMES:
+            game_recorder(win_ratio, loose_ratio, tie_ratio, pot_odds, current_bet, self.bet, self.chips, this_bet)
         return this_bet
 
 
@@ -139,6 +141,26 @@ class My_All_Inner(Player):
             # print("går all in!", current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board)
             bet = self.chips
         return bet
+
+
+def game_recorder(win_rate, loose_rate, tie_rate, pot_odds, current_bet, player_bet, player_chips, selected_bet):
+    # fold, check, call, raise
+    if selected_bet == 0:
+        action = [0, 1, 0, 0, 0]
+    elif selected_bet + player_bet == current_bet:
+        action = [0, 0, 1, 0, 0]
+    elif selected_bet == player_chips:
+        action = [0, 0, 0, 0, 1]
+    elif selected_bet + player_bet > current_bet:
+        action = [0, 0, 0, 1, 0]
+    else:
+        action = [1, 0, 0, 0, 0]
+
+    state = [win_rate, loose_rate, tie_rate, pot_odds]
+    with open("inputs.txt", "a") as inputfile:
+        inputfile.write(str(state) + "\n")
+    with open("answers.txt", "a") as answerfile:
+        answerfile.write(str(action) + "\n")
 
 
 if __name__ == '__main__':

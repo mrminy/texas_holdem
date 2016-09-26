@@ -9,6 +9,7 @@ MIN_BET = 5
 
 # AI
 EVALUATION_PRECISION = 1000
+RECORD_GAMES = False
 
 # Straight flush, four of a kind, full house, flush, straight, three of a  kind, two pair, one pair, high card
 EVAL_VALUES = [9, 8, 7, 6, 5, 4, 3, 2, 1]
