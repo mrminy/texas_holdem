@@ -1,6 +1,6 @@
 NR_OF_PLAYERS = 2
 
-FRAME_DELAY = 0.5
+FRAME_DELAY = 2.5
 
 START_CHIPS = 1000
 BIG_BLIND = 10
@@ -9,7 +9,8 @@ MIN_BET = 5
 
 # AI
 EVALUATION_PRECISION = 1000
-RECORD_GAMES = False
+RECORD_GAMES = True
+MODEL_NAME = 'my_model.h5'
 
 # Straight flush, four of a kind, full house, flush, straight, three of a  kind, two pair, one pair, high card
 EVAL_VALUES = [9, 8, 7, 6, 5, 4, 3, 2, 1]

@@ -2,14 +2,12 @@
 AI written by Mikkel Nylend
 """
 
-import numpy as np
-import random
 import time
+
 import deck
 import evaluator
 import parameters
 from player import Player
-from multiprocessing import Pool
 
 
 # 08.09. 20:00 --> 9562 evaluations per second (tested with pocket ace)
@@ -96,7 +94,7 @@ class My_Experimenter_AI2(Player):
         self.self_folds = 0
 
     def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
-        this_bet = -1
+        this_bet = 0
         pot_odds = 0
 
         win_ratio, loose_ratio, tie_ratio = evaluate_situation(parameters.EVALUATION_PRECISION,
@@ -106,7 +104,7 @@ class My_Experimenter_AI2(Player):
             equity = loose_ratio / win_ratio
         else:
             equity = float('inf')
-        round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 1.0]
+        round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 0.95]
         equity *= round_score[len(board)]
 
         if current_bet - max(0, self.bet) != 0:
@@ -130,19 +128,6 @@ class My_Experimenter_AI2(Player):
             game_recorder(win_ratio, loose_ratio, tie_ratio, pot_odds, current_bet, self.bet, self.chips, this_bet)
         return this_bet
 
-
-class My_All_Inner(Player):
-    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
-        bet = current_bet - self.bet
-        win_ratio, loose_ratio, tie_ratio = evaluate_situation(parameters.EVALUATION_PRECISION,
-                                                               len(players_this_round) - 1, self.hand, board)
-        win_ratio += tie_ratio
-        if win_ratio >= 0.90:
-            # print("går all in!", current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board)
-            bet = self.chips
-        return bet
-
-
 def game_recorder(win_rate, loose_rate, tie_rate, pot_odds, current_bet, player_bet, player_chips, selected_bet):
     # fold, check, call, raise
     if selected_bet == 0:
@@ -164,4 +149,4 @@ def game_recorder(win_rate, loose_rate, tie_rate, pot_odds, current_bet, player_
 
 
 if __name__ == '__main__':
-    evaluate_situation(parameters.EVALUATION_PRECISION, 1, [[0, 14], [1, 14]], [[2, 14], [3, 14], [1, 2]])
+    print(evaluate_situation(parameters.EVALUATION_PRECISION, 1, [[0, 14], [1, 14]], []))

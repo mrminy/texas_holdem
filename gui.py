@@ -12,7 +12,7 @@ import game
 import parameters
 import time
 from player import Player, Other_player, Call_player, Human_player
-from mikkel_ai import My_Experimenter_AI2, My_All_Inner
+from mikkel_ai import My_Experimenter_AI2 as mikkel_ai
 from marius_ai.marius_ai import ai as marius_ai
 from johannes_ai import pokerAI as johannes_ai
 
@@ -24,7 +24,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [marius_ai(0, "Marius AI", 0), johannes_ai(1, "Johannes AI", 0)]
+input_players = [mikkel_ai(0, "Mikkel AI", 0), johannes_ai(1, "Johannes AI", 0)]
 
 
 def get_card_image(card):
@@ -94,6 +94,9 @@ def main():
             screen.blit(get_card_image(cards[4]), (4 * img_dim[0], img_dim[1] + 50))
         text_pot = font.render("Pot: " + str(g.pot), 1, (10, 10, 10))
         screen.blit(text_pot, (10, 220))
+
+        text_round_nr = font.render("Round nr: " + str(g.round_nr), 1, (10, 10, 10))
+        screen.blit(text_round_nr, (dim[0]-200, 5))
 
         for i, p in enumerate(g.players):
             text_color = black

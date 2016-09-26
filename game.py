@@ -61,7 +61,7 @@ class Texas_holdem:
         if self.logger:
             print(self)
             if self.players_this_round is not None and len(self.players_this_round) > 0:
-                print("Winner of round: ", self.players_this_round[0])
+                print("Winners of round:", self.players_this_round)
         if len(self.players) > 1:
             self.players_this_round = []
             self.deal_nr = 0

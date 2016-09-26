@@ -8,7 +8,7 @@ from marius_ai.marius_ai import ai as marius_ai
 from johannes_ai import pokerAI as johannes_ai
 
 start_time = time.time()
-N_games = 1000
+N_games = 5000
 win_counter = np.zeros(3)
 
 input_players = []
