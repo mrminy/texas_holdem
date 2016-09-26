@@ -135,6 +135,7 @@ def check_straight(cards):
         for i, c in enumerate(cards):
             for value in value_arr:
                 if c[1] == value:
+                    value_arr.remove(value)
                     straight_cards.append(c)
         if len(straight_cards) == 4:
             straight_cards.append(cards[0])
@@ -203,3 +204,12 @@ def check_one_pair(cards):
 def high_card(cards):
     cards.sort(key=lambda x: x[1], reverse=True)
     return parameters.EVAL_VALUES[8], cards[0:5]
+
+
+johannes_cards = [[3, 2], [1, 2], [2, 11], [2, 4], [1, 14], [1, 10], [3, 10]]
+marius_cards = [[3, 2], [1, 2], [2, 11], [2, 4], [1, 14], [3, 3], [0, 6]]
+
+johannes_score = evaluate(johannes_cards)
+marius_score = evaluate(marius_cards)
+print(johannes_score)
+print(marius_score)
