@@ -9,5 +9,5 @@ Required libs:
 - Numpy
 
 Known bugs:
-
-
+- min_bet bug
+- Is there a bug in pot dealing?

@@ -12,7 +12,7 @@ class ai(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
 
         if (self.hand[0][1] + self.hand[1][1]) > 22 or (self.hand[0][1] == self.hand[1][1]):
             return max_bet

@@ -2,9 +2,8 @@
 AI coded by Johannes Barstad
 """
 
-from player import Player
-import parameters
 import evaluator
+from player import Player
 
 
 class pokerAI(Player):
@@ -12,13 +11,13 @@ class pokerAI(Player):
     Used for testing og debugging. Always calls
     """
 
-    def __init__(self, id_value, name, chips):
-        super().__init__(id_value, name, chips)
+    def __init__(self, name):
+        super().__init__(name)
         self.global_confidence = 0
         self.previous_flop = -1
         self.previous_flop_counter = 0
 
-    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
         if len(board) == 0 and self.previous_flop_counter == 0:
             self.global_confidence = 0
         if self.previous_flop == len(board):

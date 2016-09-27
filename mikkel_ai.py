@@ -88,12 +88,12 @@ def evaluate_situation(N, n_opponents, my_hand, board):
 
 
 class My_Experimenter_AI2(Player):
-    def __init__(self, id_value, name, chips):
-        super().__init__(id_value, name, chips)
+    def __init__(self, name):
+        super().__init__(name)
         self.self_calls = 0
         self.self_folds = 0
 
-    def make_decision(self, betting_history, current_bet, max_bet, min_bet, min_raise, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
         this_bet = 0
         pot_odds = 0
 
@@ -127,6 +127,7 @@ class My_Experimenter_AI2(Player):
         if parameters.RECORD_GAMES:
             game_recorder(win_ratio, loose_ratio, tie_ratio, pot_odds, current_bet, self.bet, self.chips, this_bet)
         return this_bet
+
 
 def game_recorder(win_rate, loose_rate, tie_rate, pot_odds, current_bet, player_bet, player_chips, selected_bet):
     # fold, check, call, raise

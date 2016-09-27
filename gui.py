@@ -24,7 +24,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [mikkel_ai(0, "Mikkel AI", 0), johannes_ai(1, "Johannes AI", 0)]
+input_players = [mikkel_ai("Mikkel AI"), johannes_ai("Johannes AI")]
 
 
 def get_card_image(card):

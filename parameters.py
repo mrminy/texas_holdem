@@ -1,6 +1,6 @@
-NR_OF_PLAYERS = 2
-
 FRAME_DELAY = 2.5
+
+MAXIMUM_TIME_PER_DECISION = 1.5
 
 START_CHIPS = 1000
 BIG_BLIND = 10
@@ -9,7 +9,7 @@ MIN_BET = 5
 
 # AI
 EVALUATION_PRECISION = 1000
-RECORD_GAMES = True
+RECORD_GAMES = False
 MODEL_NAME = 'my_model.h5'
 
 # Straight flush, four of a kind, full house, flush, straight, three of a  kind, two pair, one pair, high card
