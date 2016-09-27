@@ -244,7 +244,8 @@ class Texas_holdem:
             open_information_players_this_round.append(p_this_round.get_open_information())
         start_time = time.time()
         original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet), max_bet,
-                                                         open_information_players_this_round, int(self.pot), board_copy)
+                                                         open_information_players_this_round, int(self.pot), board_copy,
+                                                         int(self.round_nr))
         used_time = time.time() - start_time
         if used_time > parameters.MAXIMUM_TIME_PER_DECISION:
             print("Player used longer than 1 second to decide. (", used_time, "Counts as fold...", self.current_player,

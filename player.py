@@ -32,7 +32,7 @@ class Player:
     def get_open_information(self):
         return {'id_value': self.id_value, 'name': self.name, 'blind': self.blind, 'chips': self.chips, 'bet': self.bet}
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
         """
         This represents a total random player
         :param betting_history: betting history for this betting round
@@ -62,7 +62,7 @@ class Other_player(Player):
     Used for testing og debugging
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
         if len(board) == 0:
             return current_bet - self.bet
         else:
@@ -74,7 +74,7 @@ class Call_player(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
         if current_bet == 0:
             return parameters.BIG_BLIND
         return current_bet - self.bet
@@ -85,7 +85,7 @@ class Raiser_player(Player):
     Used for testing og debugging. Always calls
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
         bet = min(parameters.BIG_BLIND, self.chips)
         return bet * 2
 
@@ -96,7 +96,7 @@ class Human_player(Player):
     (when bet is chosen, you can choose the amount of chips to bet)
     """
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
         while True:
             action = input('Choose your action: (f=fold, c=check, b=bet) (current bet is ' + str(current_bet) + ')\n')
 

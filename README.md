@@ -9,5 +9,4 @@ Required libs:
 - Numpy
 
 Known bugs:
-- min_bet bug
-- Is there a bug in pot dealing?
+- Is there a bug in pot dealing? (sometimes when playing more than 3 players, the winner ends up with more than 4xSTART_CHIPS?!?)

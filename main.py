@@ -9,10 +9,10 @@ from johannes_ai import pokerAI as johannes_ai
 # from mikkel_ai2 import My_Keras_SL_AI as mikkel_ai2
 
 start_time = time.time()
-N_games = 1000
+N_games = 1
 win_counter = np.zeros(4)
 
-input_players = [mikkel_ai("Mikkel AI"), marius_ai("Marius AI"), johannes_ai("Johannes AI")]
+input_players = [johannes_ai("J"), marius_ai("Ma AI")]
 
 for n in range(N_games):
     print("Game nr:", n, "- Current win rates:", win_counter)
@@ -24,4 +24,4 @@ for n in range(N_games):
 
 print(win_counter)
 print(input_players)
-print(time.time()-start_time)
+print(time.time() - start_time)

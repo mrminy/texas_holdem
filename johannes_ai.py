@@ -10,22 +10,15 @@ class pokerAI(Player):
     """
     Used for testing og debugging. Always calls
     """
-
     def __init__(self, name):
         super().__init__(name)
         self.global_confidence = 0
-        self.previous_flop = -1
-        self.previous_flop_counter = 0
+        self.previous_round_nr = -1
 
-    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board):
-        if len(board) == 0 and self.previous_flop_counter == 0:
+    def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
+        if len(board) == 0 and self.previous_round_nr != round_nr:
             self.global_confidence = 0
-        if self.previous_flop == len(board):
-            self.previous_flop_counter += 1
-        else:
-            self.previous_flop_counter = 0
-        self.previous_flop = len(board)
-
+        self.previous_round_nr = round_nr
         confidence = 0
 
         # confidence += ((self.chips-1000)**1.5)**0.5
