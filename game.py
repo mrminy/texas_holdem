@@ -236,16 +236,19 @@ class Texas_holdem:
                 return True
         return False
 
-    def bet(self):
+    def bet(self, action=None):
         board_copy = self.board[:]
         open_information_players_this_round = []
         max_bet = self.find_max_bet()
         for p_this_round in self.players_this_round:
             open_information_players_this_round.append(p_this_round.get_open_information())
         start_time = time.time()
-        original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet), max_bet,
-                                                         open_information_players_this_round, int(self.pot), board_copy,
-                                                         int(self.round_nr))
+        if action is None:
+            original_bet = self.current_player.make_decision(self.all_betting_history[-1], int(self.current_bet),
+                                                             max_bet, open_information_players_this_round,
+                                                             int(self.pot), board_copy, int(self.round_nr))
+        else:
+            original_bet = action
         used_time = time.time() - start_time
         if used_time > parameters.MAXIMUM_TIME_PER_DECISION:
             print("Player used longer than 1 second to decide. (", used_time, "Counts as fold...", self.current_player,
@@ -305,11 +308,11 @@ class Texas_holdem:
             self.all_in_nr = self.deal_nr
         self.all_betting_history[-1].append([modded_bet, self.current_player.id_value])
 
-    def play_one_step(self):
+    def play_one_step(self, action=None):
         if len(self.players) == 1:
             if self.logger:
                 print("Finished! Only one left.", self.players[0])
-            return
+            return -1
         if self.deal_nr >= 4 or len(self.players_this_round) == 1:
             if self.logger:
                 print("Pot: ", self.pot, " - board: ", self.board)
@@ -317,24 +320,27 @@ class Texas_holdem:
             self.clear_players()
             if len(self.players) == 1:
                 print("We have a winner!", self.players[0], "Rounds played: " + str(self.round_nr))
-                return
+                return -1
             if self.logger:
                 print("New round, after full flop...")
             self.new_round()
-            return
+            return -1
         if self.all_pleased():
             # Deal cards...
             if self.logger:
                 print("All pleased. Deal cards")
             self.dealer_step()
-            return
+            return -1
+
+        if action is None:
+            return self.next_players_turn()
 
         # Make next player bid, fold or check
         self.current_player = self.get_next_player(self.current_player, self.players_this_round)
         if self.current_player.chips != 0:
             if self.logger:
                 print("Betting...", self.current_player)
-            self.bet()
+            self.bet(action)
             if self.logger:
                 print(self)
 
@@ -344,3 +350,15 @@ class Texas_holdem:
             for p in self.players:
                 str_out += " - " + str(p)
         return str_out
+
+    def get_state(self):
+        board_copy = self.board[:]
+        open_information_players_this_round = []
+        max_bet = self.find_max_bet()
+        for p_this_round in self.players_this_round:
+            open_information_players_this_round.append(p_this_round.get_open_information())
+        return [self.all_betting_history[-1], int(self.current_bet), max_bet, open_information_players_this_round,
+                int(self.pot), board_copy, int(self.round_nr)]
+
+    def next_players_turn(self):
+        return self.get_next_player(self.current_player, self.players_this_round).id_value

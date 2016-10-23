@@ -9,7 +9,7 @@ def simple_evaluate(cards):
 
 
 def evaluate(cards):
-    if len(cards) < 5:
+    if cards is None or len(cards) < 5:
         return None
     value, top_cards = check_straight_flush(cards)
     if value != 0:
