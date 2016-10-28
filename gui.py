@@ -6,15 +6,15 @@ How to use:
     - To play against AI: add Human_player to input_players and play in command line
 """""
 
+import time
+
 import pygame
 from pygame.locals import *
+
 import game
 import parameters
-import time
-from player import Player, Other_player, Call_player, Human_player
-from mikkel_ai import My_Experimenter_AI2 as mikkel_ai
-from marius_ai.marius_ai import ai as marius_ai
-from johannes_ai import pokerAI as johannes_ai
+from johannes.johannes_ai import pokerAI as johannes_ai
+from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel_ai
 
 white = (255, 64, 64)
 green = (51, 204, 51)

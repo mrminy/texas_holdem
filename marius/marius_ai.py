@@ -3,7 +3,7 @@ AI coded by Marius Amundsen
 """
 import random
 
-from marius_ai.pokerklient import rules, deck
+from marius.pokerklient import rules, deck
 from player import Player
 
 

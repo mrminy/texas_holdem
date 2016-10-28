@@ -4,6 +4,12 @@ import game
 
 
 class self_play_env:
+    """
+    You need to input an agent that extends Player,
+     and includes the function: get_state(game_state) and get_bet(action_index, current_bet).
+    The opponent is just an agent that extends Player.
+    This class would typically be used for self-play/rl to improve
+    """
     def __init__(self, agent, opponent, logger=False):
         self.opponent = opponent
         self.agent = agent
@@ -36,7 +42,7 @@ class self_play_env:
         old_value = self.agent.chips + self.agent.bet
 
         # Do step and update to next state
-        self.g.play_one_step(bet)
+        self.g.play_one_step(self_play=True, action=bet)
         self.state = self.agent.get_state(self.g.get_state())
 
         while len(self.g.players) != 1:
@@ -74,4 +80,4 @@ class self_play_env:
             print("Round:", self.g.round_nr, "- Deal:", self.g.deal_nr, "- Reward:", reward, "- Action:", action,
                   "- Current state:", self.state, "- Done:", done)
 
-        return self.state, reward, done
+        return self.state, reward, done, None

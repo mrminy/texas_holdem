@@ -1,20 +1,18 @@
-import random
-
 import datetime
-import numpy as np
+import random
 import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+from marius_ai.marius_ai import ai as marius_ai
+from mikkel_ai import My_Experimenter_AI2 as mikkel_ai
 
 import game
 import parameters
-import matplotlib.pyplot as plt
 import self_play_env
-
-from scipy.interpolate import spline
+from johannes.johannes_ai import pokerAI as johannes_ai
+from mikkel.mikkel_ai2 import My_Keras_SL_AI, My_Keras_SL_AI_Self_Play_Learner
 from player import Call_player
-from mikkel_ai import My_Experimenter_AI2 as mikkel_ai
-from marius_ai.marius_ai import ai as marius_ai
-from johannes_ai import pokerAI as johannes_ai
-from mikkel_ai2 import My_Keras_SL_AI, My_Keras_SL_AI_Self_Play_Learner
 
 """
 Implementation of deep Q-learning with self play (or play against others)

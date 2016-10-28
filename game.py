@@ -308,7 +308,7 @@ class Texas_holdem:
             self.all_in_nr = self.deal_nr
         self.all_betting_history[-1].append([modded_bet, self.current_player.id_value])
 
-    def play_one_step(self, action=None):
+    def play_one_step(self, self_play=False, action=None):
         if len(self.players) == 1:
             if self.logger:
                 print("Finished! Only one left.", self.players[0])
@@ -332,7 +332,7 @@ class Texas_holdem:
             self.dealer_step()
             return -1
 
-        if action is None:
+        if self_play and action is None:
             return self.next_players_turn()
 
         # Make next player bid, fold or check
