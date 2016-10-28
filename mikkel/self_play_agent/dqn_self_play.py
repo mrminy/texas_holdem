@@ -3,8 +3,8 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-from marius_ai.marius_ai import ai as marius_ai
-from mikkel_ai import My_Experimenter_AI2 as mikkel_ai
+from marius.marius_ai import ai as marius_ai
+from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel_ai
 
 import self_play_env
 from johannes.johannes_ai import pokerAI as johannes_ai
@@ -19,10 +19,10 @@ H2 = 200
 batch_number = 500
 gamma = 0.99
 num_between_q_copies = 150
-explore_decay = 0.995
+explore_decay = 0.9999
 min_explore = 0.02
 memory_size = 1000000
-learning_rate = 0.0005
+learning_rate = 0.00005
 
 
 class DQN:
@@ -89,12 +89,12 @@ class DQN:
             h_1 = tf.nn.relu(tf.matmul(self.states_, w1) + b1)
             h_2 = tf.nn.relu(tf.matmul(h_1, w2) + b2)
             h_2 = tf.nn.dropout(h_2, .5)
-            self.Q = tf.matmul(h_2, w3) + b3
+            self.Q = tf.nn.softmax(tf.matmul(h_2, w3) + b3)
 
             h_1_ = tf.nn.relu(tf.matmul(self.states_, w1_) + b1_)
             h_2_ = tf.nn.relu(tf.matmul(h_1_, w2_) + b2_)
             h_2_ = tf.nn.dropout(h_2_, .5)
-            self.Q_ = tf.matmul(h_2_, w3_) + b3_
+            self.Q_ = tf.nn.softmax(tf.matmul(h_2_, w3_) + b3_)
 
             self.action_used = tf.placeholder(tf.int32, [None], name="action_masks")
             action_masks = tf.one_hot(self.action_used, len(self.env.action_space))
@@ -124,8 +124,8 @@ class DQN:
             while True:
                 tot_ticks += 1
                 q = self.sess.run(self.Q, feed_dict={self.states_: np.array([state])})[0]
-                action = np.argmax(q)
-                new_state, reward, done, _ = self.env.step(action)
+                # action = np.argmax(q)
+                new_state, reward, done, _ = self.env.step(q[0])
 
                 if done:
                     break
@@ -146,7 +146,7 @@ class DQN:
         for episode in range(max_episodes):
             state = self.env.reset(env.agent, env.opponent)
 
-            reward_sum = 0
+            reward_sum = 0.0
 
             while True:
                 ticks += 1
@@ -157,10 +157,11 @@ class DQN:
                         print("Q:{}, Q_ {}".format(q[0], qp[0]))
 
                 if explore > random.random():
-                    action = np.random.choice(len(self.env.action_space))
+                    action = random.random()  # np.random.choice(len(self.env.action_space))
                 else:
                     q = self.sess.run(self.Q, feed_dict={self.states_: np.array([state])})[0]
-                    action = np.argmax(q)
+                    # action = np.argmax(q)
+                    action = q[0]
                 explore = max(explore * explore_decay, min_explore)
 
                 new_state, reward, done, _ = self.env.step(action)
@@ -232,17 +233,17 @@ def fetch_opponent():
 
 
 if __name__ == '__main__':
-    agent = My_Keras_SL_AI_Self_Play_Learner("New Keras AI")
+    agent = My_Keras_SL_AI_Self_Play_Learner("New Keras AI", model_path='my_model.h5')
     opponent = Call_player("Call player")
-    env = self_play_env.self_play_env(agent, opponent)
+    env = self_play_env.self_play_env(agent, opponent, action_size=2)
     dqn = DQN(env)
-    dqn.restore(path='self_play_agent/sl_models/first_tf_model_for_dqn.ckpt')
+    # dqn.restore(path='self_play_agent/sl_models/first_tf_model_for_dqn.ckpt')
 
     # Test against opponent n times
-    n_games = 50
+    n_games = 500
     winners_1 = dqn.play_games(n_games)
 
-    dqn.learn(max_episodes=100)
+    dqn.learn(max_episodes=2000)
 
     # Test against opponent n times
     winners_2 = dqn.play_games(n_games)

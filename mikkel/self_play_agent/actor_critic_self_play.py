@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import tensorflow as tf
 
@@ -127,7 +129,7 @@ class Actor:
                 state = state.reshape(1, len(self.observation_space))
 
                 _, error_value = self.sess.run([self.optim, self.loss],
-                                               feed_dict={self.x: state, self.action_input: action,
+                                               feed_dict={self.x: state, self.action_input: [action],
                                                           self.y: advantage_vector[j]})
 
     def softmax_policy(self, state, weights, biases):
@@ -142,10 +144,10 @@ class Actor:
         softmax_out = self.sess.run(self.policy, feed_dict={self.x: state})
         if explore:
             # Sample action from prob density
-            action = np.random.choice(np.arange(len(self.action_space)), 1, replace=True, p=softmax_out[0])[0]
+            action = random.random()  # np.random.choice(np.arange(len(self.action_space)), 1, replace=True, p=softmax_out[0])[0]
         else:
             # Follow optimal policy (argmax)
-            action = np.argmax(softmax_out[0])
+            action = softmax_out[0]
         return action
 
     def update_memory(self, episode_states, episode_actions, episode_rewards, episode_next_states,
@@ -166,13 +168,13 @@ class Actor:
         del replay_states[:], replay_actions[:], replay_rewards[:], replay_next_states[:], replay_return_from_states[:]
 
     def to_action_input(self, action):
-        """Utility function to convert action to a format suitable for the neura networ input"""
-        action_input = [0] * self.action_space_n
-        # print "Action going in: ", action
-        action_input[action] = 1
-        action_input = np.asarray(action_input)
-        action_input = action_input.reshape(1, self.action_space_n)
-        return action_input
+        """Utility function to convert action to a format suitable for the neural network input"""
+        # action_input = [0] * self.action_space_n
+        # # print "Action going in: ", action
+        # action_input[action] = 1
+        # action_input = np.asarray(action_input)
+        # action_input = action_input.reshape(1, self.action_space_n)
+        return action
 
 
 class Critic:
@@ -359,7 +361,7 @@ class ActorCriticLearner:
 
                 avg_rew = sum(latest_rewards) / float(len(latest_rewards))
                 if self.logger:
-                    print("Episode:", i+1, " - AVG:", avg_rew)
+                    print("Episode:", i + 1, " - AVG:", avg_rew)
 
                     # Trying with full imagination rollouts for each episode
                     # self.pre_learn(max_env_time_steps, goal_avg_score, n_epochs=self.n_rollout_epochs, logger=False)
@@ -371,10 +373,10 @@ class ActorCriticLearner:
 if __name__ == '__main__':
     agent = My_Keras_SL_AI_Self_Play_Learner("New Keras AI", model_path='my_model.h5')
     opponent = Call_player("Call player")
-    env = self_play_env.self_play_env(agent, opponent)
-    ac = ActorCriticLearner(env, 5000, 2, 0.8)
+    env = self_play_env.self_play_env(agent, opponent, action_size=1)
+    ac = ActorCriticLearner(env, 100, 2, 0.8)
 
-    n_games = 500
+    n_games = 0
 
     # Test against opponent n times
     winners_1 = ac.play_games(n_games)

@@ -10,21 +10,22 @@ class self_play_env:
     The opponent is just an agent that extends Player.
     This class would typically be used for self-play/rl to improve
     """
-    def __init__(self, agent, opponent, logger=False):
+    def __init__(self, agent, opponent, action_size=5, observation_size=4, logger=False):
         self.opponent = opponent
         self.agent = agent
         self.g = game.Texas_holdem(input_players=[agent, opponent], logger=False)
         self.state = agent.get_state(self.g.get_state())
         self.reward_history = []
-        self.total_reward = 0
+        self.total_reward = 0.0
         self.logger = logger
 
         # Env
-        self.action_space = np.arange(5)
-        self.observation_space = np.arange(4)
+        self.action_space = np.arange(action_size)
+        self.observation_space = np.arange(observation_size)
 
     def reset(self, agent, opponent):
         self.g.reset(input_players=[agent, opponent])
+        self.total_reward = 0.0
         return self.agent.get_state(self.g.get_state())
 
     def step(self, action):
@@ -79,5 +80,5 @@ class self_play_env:
         if self.logger:
             print("Round:", self.g.round_nr, "- Deal:", self.g.deal_nr, "- Reward:", reward, "- Action:", action,
                   "- Current state:", self.state, "- Done:", done)
-
+        self.total_reward += reward
         return self.state, reward, done, None

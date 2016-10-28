@@ -151,12 +151,20 @@ class My_Keras_SL_AI_Self_Play_Learner(Player):
             pot_odds = 0.0
         return [win_rate, loose_rate, tie_rate, pot_odds]
 
-    def get_bet(self, action_index, current_bet):
-        if action_index == 4:
+    def get_bet(self, action, current_bet):
+        # if action_index == 4:
+        #     return self.chips
+        # elif action_index == 3:
+        #     return min(current_bet - self.bet + self.chips * 0.2, self.chips)
+        # elif action_index == 2:
+        #     return current_bet - self.bet
+        # return 0
+        double_bet = action * self.chips
+        if action > 0.9:
             return self.chips
-        elif action_index == 3:
-            return min(current_bet - self.bet + self.chips * 0.2, self.chips)
-        elif action_index == 2:
+        elif double_bet > current_bet:
+            return int(double_bet)
+        elif double_bet > current_bet * 0.75:
             return current_bet - self.bet
         return 0
 
