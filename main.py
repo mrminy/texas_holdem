@@ -2,18 +2,16 @@ import datetime
 import time
 
 import numpy as np
-from marius.marius_ai import ai as marius_ai
-from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel_ai
-from mikkel.mikkel_ai2 import My_Keras_SL_AI as keras
+from marius.marius_ai import ai as marius
+from johannes.johannes_ai import pokerAI as johannes
+from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel
 
 import game
-from johannes.johannes_ai import pokerAI as johannes_ai
 
 
 def play_ais():
     win_counter = np.zeros(4)
-    input_players = [keras("Keras", model_path='mikkel/keras_models/my_model.h5'), mikkel_ai("Mikkel"),
-                     marius_ai("Marius"), johannes_ai("Johannes")]
+    input_players = [marius("Marius"), johannes("Johannes"), mikkel("Mikkel")]
     for n in range(N_games):
         print(datetime.datetime.now(), " - Game nr:", n, "- Current win rates:", win_counter)
         g = game.Texas_holdem(input_players=input_players, logger=False)

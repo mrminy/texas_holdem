@@ -13,8 +13,9 @@ from pygame.locals import *
 
 import game
 import parameters
-from johannes.johannes_ai import pokerAI as johannes_ai
-from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel_ai
+from johannes.johannes_ai import pokerAI as johannes
+from marius.marius_ai import ai as marius
+from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel
 
 white = (255, 64, 64)
 green = (51, 204, 51)
@@ -24,7 +25,7 @@ dim = (1150, 750)
 img_dim = (150, 217)
 
 # Players to play with GUI
-input_players = [mikkel_ai("Mikkel AI"), johannes_ai("Johannes AI")]
+input_players = [johannes("Johannes"), marius("Marius"), mikkel("Mikkel")]
 
 
 def get_card_image(card):
