@@ -16,6 +16,7 @@ class Player:
         self.blind = 0  # 0 = no blind, 1 = small blind, 2 = big blind
         self.chips = 0  # current amount of chips to bet
         self.bet = 0  # Current bet in this betting round
+        self.spoken = False
 
     def give_hand(self, card1, card2):
         self.hand = [card1, card2]
@@ -25,6 +26,7 @@ class Player:
         self.blind = 0
         self.chips = 0
         self.bet = 0
+        self.spoken = False
 
     def get_hand(self):
         return self.hand

@@ -86,6 +86,7 @@ class Texas_holdem:
             # Making ready for new round (paying blinds)
             for i, p in enumerate(self.players):
                 self.players_this_round.append(p)
+                p.spoken = False
                 blind_value = 0
                 p.bet = 0
                 if p.blind == 2:
@@ -212,7 +213,7 @@ class Texas_holdem:
         if self.is_all_in() and self.deal_nr != self.all_in_nr:
             return True
         for p in self.players_this_round:
-            if p.bet < self.current_bet:
+            if p.bet < self.current_bet or not p.spoken:
                 return False
         return True
 
@@ -306,6 +307,7 @@ class Texas_holdem:
                 self.players_this_round.remove(self.current_player)
         if self.current_player.chips <= 0:
             self.all_in_nr = self.deal_nr
+
         self.all_betting_history[-1].append([modded_bet, self.current_player.id_value])
 
     def play_one_step(self, self_play=False, action=None):
@@ -341,6 +343,7 @@ class Texas_holdem:
             if self.logger:
                 print("Betting...", self.current_player)
             self.bet(action)
+            self.current_player.spoken = True
             if self.logger:
                 print(self)
 
