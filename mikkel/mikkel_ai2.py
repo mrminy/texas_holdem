@@ -115,12 +115,12 @@ class My_Keras_SL_AI(Player):
         pred = prediction[0].reshape(5)
         max_index = np.argmax(pred)
 
-        # print("State:", state)
-        # print("Action:", max_index)
+        # print(pred)
         if max_index == 4:
             return self.chips
         elif max_index == 3:
-            return min(current_bet - self.bet + self.chips * 0.2, self.chips)
+            predicted_bet = current_bet - self.bet + self.chips * 0.4
+            return min(predicted_bet, self.chips)
         elif max_index == 2:
             return current_bet - self.bet
         return 0
