@@ -9,4 +9,3 @@ Required libs:
 - Numpy
 
 Known bugs:
-- Is there a bug in pot dealing? (sometimes when playing more than 3 players, the winner ends up with more than 4xSTART_CHIPS?!?)
