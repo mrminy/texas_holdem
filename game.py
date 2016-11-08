@@ -261,6 +261,7 @@ class Texas_holdem:
         original_bet = int(original_bet)
         if self.logger:
             print(self.current_player, "original bet:", original_bet)
+            print("Current bet:", self.current_bet)
 
         modded_bet = min(min(original_bet, self.current_player.chips), self.find_max_bet())
         is_all_in = self.is_all_in()
@@ -293,7 +294,7 @@ class Texas_holdem:
             self.pot += modded_bet
             if self.logger:
                 print(self.current_player, "calling...", modded_bet)
-        elif modded_bet == 0 and self.current_bet == 0:
+        elif original_bet == 0 and self.current_bet == 0:
             # Checking
             if self.logger:
                 print(self.current_player, "checking...")

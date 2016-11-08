@@ -55,7 +55,7 @@ class Player:
 
     def __str__(self):
         return str(self.name) + ' - ' + str(self.id_value) + ' - card 1: ' + str(self.hand[0]) + ' - card 2: ' +\
-               str(self.hand[1]) + ' - blind: ' + str(self.blind) + ' - chips: ' + str(self.chips) + ' - current bet: '\
+               str(self.hand[1]) + ' - blind: ' + str(self.blind) + ' - chips: ' + str(self.chips) + ' - player bet: '\
                + str(self.bet)
 
 
