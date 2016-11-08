@@ -108,8 +108,10 @@ class Texas_holdem:
         if self.deal_nr == 1 or self.deal_nr == 2:
             # Deal 1 card
             self.board.append(self.deck.draw_card())
+        self.current_bet = 0
         for p in self.players:
             p.bet = 0
+            p.spoken = False
         self.deal_nr += 1
 
     def who_wins(self):
