@@ -94,7 +94,7 @@ class My_Experimenter_AI2(Player):
         self.self_folds = 0
 
     def make_decision(self, betting_history, current_bet, max_bet, players_this_round, pot, board, round_nr):
-        this_bet = 0
+        this_bet = 0.0
         pot_odds = 0
 
         win_ratio, loose_ratio, tie_ratio = evaluate_situation(parameters.EVALUATION_PRECISION,
@@ -104,22 +104,32 @@ class My_Experimenter_AI2(Player):
             equity = loose_ratio / win_ratio
         else:
             equity = float('inf')
-        round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 0.95]
+        round_score = [1, 1, 1, 1, 1, 1]
+        # round_score = [0.7, 0.8, 0.8, 0.8, 0.9, 0.9]
+        # round_score = [0.6, 0.8, 0.8, 0.75, 0.85, 0.9]
         equity *= round_score[len(board)]
+
+        # print("Equity:", equity, "Win rate:", win_ratio)
 
         if current_bet - max(0, self.bet) != 0:
             what_i_have_to_bet = current_bet - self.bet
             what_im_been_offered = pot
             pot_odds = what_im_been_offered / what_i_have_to_bet
 
+            # print("Pot odds:", pot_odds)
+
             # print("Pot - equity:", pot_odds, pot, current_bet, self.bet, equity)
             if pot_odds > equity:
-                if win_ratio >= 0.85:
+                diff = pot_odds - equity
+                # print("DIFF:", diff)
+                if diff >= 5.0:
                     this_bet = self.chips
+                elif diff >= 3.0:
+                    this_bet = current_bet - self.bet + self.chips * 0.2
                 else:
                     this_bet = current_bet - self.bet
         else:
-            this_bet = min(0.2 * parameters.START_CHIPS, self.chips)
+            this_bet = min(0.2 * parameters.START_CHIPS, self.chips) * win_ratio
         if this_bet > 0:
             self.self_calls += 1
         else:

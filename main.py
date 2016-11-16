@@ -5,6 +5,7 @@ import numpy as np
 from marius.marius_ai import ai as marius
 from johannes.johannes_ai import pokerAI as johannes
 from mikkel.mikkel_ai import My_Experimenter_AI2 as mikkel
+from mikkel.mikkel_ai2 import My_Keras_SL_AI as mikkel2
 
 import game
 
@@ -26,7 +27,7 @@ def play_ais():
 
 
 start_time = time.time()
-N_games = 100
+N_games = 500
 N_threads = 4
 
 s_time = time.time()
