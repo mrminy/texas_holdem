@@ -5,6 +5,7 @@ Coded by Marius Amundsen
 import random
 
 
+
 class deck(object):
     """ One hole deck of playing cards"""
 
@@ -43,7 +44,7 @@ class winner(object):
 
     def __init__(self, players):
         self.players = players
-        self.playerScore = [-111111111111111, -111111111111111]
+        self.playerScore = [-111111111111111, -111111111111111,-111111111111111,-111111111111111,-111111111111111]
 
     def update_Score(self, player, score):
         if self.playerScore[player] < score: self.playerScore[player] = score
@@ -62,6 +63,9 @@ class winner(object):
                 player = 12
 
         return player, score
+
+
+
 
 
 class rules(object):
@@ -153,7 +157,7 @@ class rules(object):
                     # Two pair
                     # Sender her ut riktig verdi,start =2
             twopair = [0, 0]
-            for index1, counterT in enumerate(counterV, start=2):
+            for index1, counterT in enumerate(counterV, start=0):
                 if counterT == 2:
                     twopair[0] = twopair[1]
                     twopair[1] = index1
@@ -163,7 +167,7 @@ class rules(object):
             else:
                 # Pair
                 onepair = 0
-                for index1, counterT in enumerate(counterV, start=2):
+                for index1, counterT in enumerate(counterV, start=0):
                     if counterT == 2:
                         onepair = index1
 
@@ -172,7 +176,7 @@ class rules(object):
                     # High card
 
             highcard = [0, 0, 0, 0, 0]
-            for index1, counterT in enumerate(counterV, start=2):
+            for index1, counterT in enumerate(counterV, start=0):
                 if counterT == 1:
                     highcard[0] = highcard[1]
                     highcard[1] = highcard[2]
@@ -197,3 +201,4 @@ class rules(object):
 
     def see_winner(self):
         return self.winner.find_Winner()
+
